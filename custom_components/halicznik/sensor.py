@@ -162,6 +162,7 @@ class SerialSensor(Entity):
         **kwargs,
     ):
         """Read the data from the port."""
+        _LOGGER.info("init")
         logged_error = False
         while True:
             try:
