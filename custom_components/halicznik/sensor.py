@@ -166,7 +166,7 @@ class SerialSensor(Entity):
         logged_error = False
         while True:
             try:
-                reader, _ = await serial_asyncio.open_serial_connection(
+                reader, writer = await serial_asyncio.open_serial_connection(
                     url=device,
                     baudrate=baudrate,
                     bytesize=bytesize,
@@ -190,6 +190,10 @@ class SerialSensor(Entity):
             else:
                 _LOGGER.info("Serial device %s connected", device)
                 while True:
+                    Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
+                    writer.write(Request_message)
+                    _LOGGER.info("SEND Request_message ")
+                    await asyncio.sleep(0.5)
                     try:
                         line = await reader.readline()
                     except SerialException as exc:
