@@ -1,0 +1,7 @@
+{
+  "domain": "serial",
+  "name": "Serial",
+  "documentation": "https://github.com/TomaszKn/halicznik",
+  "requirements": ["pyserial-asyncio==0.5"],
+  "codeowners": ["Tomasz"]
+}
