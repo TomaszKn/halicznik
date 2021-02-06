@@ -24,7 +24,7 @@ CONF_XONXOFF = "xonxoff"
 CONF_RTSCTS = "rtscts"
 CONF_DSRDTR = "dsrdtr"
 
-DEFAULT_NAME = "Serial Sensor"
+DEFAULT_NAME = "Interfejs licznika"
 DEFAULT_BAUDRATE = 9600
 DEFAULT_BYTESIZE = serial_asyncio.serial.EIGHTBITS
 DEFAULT_PARITY = serial_asyncio.serial.PARITY_NONE
