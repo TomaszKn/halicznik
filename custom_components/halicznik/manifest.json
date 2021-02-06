@@ -1,6 +1,6 @@
 {
   "domain": "serial",
-  "name": "Serial",
+  "name": "D0 interfejs",
   "documentation": "https://github.com/TomaszKn/halicznik",
   "requirements": ["pyserial-asyncio==0.5"],
   "codeowners": ["Tomasz"]
