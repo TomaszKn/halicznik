@@ -25,9 +25,9 @@ CONF_RTSCTS = "rtscts"
 CONF_DSRDTR = "dsrdtr"
 
 DEFAULT_NAME = "Interfejs licznika"
-DEFAULT_BAUDRATE = 9600
-DEFAULT_BYTESIZE = serial_asyncio.serial.EIGHTBITS
-DEFAULT_PARITY = serial_asyncio.serial.PARITY_NONE
+DEFAULT_BAUDRATE = 300
+DEFAULT_BYTESIZE = serial_asyncio.serial.SEVENBITS
+DEFAULT_PARITY = serial_asyncio.serial.PARITY_EVEN
 DEFAULT_STOPBITS = serial_asyncio.serial.STOPBITS_ONE
 DEFAULT_XONXOFF = False
 DEFAULT_RTSCTS = False
