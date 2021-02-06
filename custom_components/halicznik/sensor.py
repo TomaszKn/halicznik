@@ -190,9 +190,10 @@ class SerialSensor(Entity):
             else:
                 _LOGGER.info("Serial device %s connected", device)
                 while True:
-                    Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
-                    writer.write(Request_message)
-                    _LOGGER.info("SEND Request_message ")
+                    #Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
+                    init_seq = bytes('/?!\r\n', 'ascii')
+                    writer.write(init_seq)
+                    _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
                     try:
                         line = await reader.readline()
