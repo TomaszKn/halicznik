@@ -197,8 +197,12 @@ class SerialSensor(Entity):
                     writer.write(init_seq)
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
+                    response = bytes()
                     try:
-                        line = await reader.readline()
+                        #line = await reader.readline()
+                        response = await reader.readline()
+                        encoding = 'utf-8'
+                        line = response.decode(encoding)
                     except SerialException as exc:
                         _LOGGER.exception(
                             "Error while reading serial device %s: %s", device, exc
