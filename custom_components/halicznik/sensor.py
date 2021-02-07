@@ -193,7 +193,7 @@ class SerialSensor(Entity):
                     await asyncio.sleep(5)
                     #Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
                     init_seq = bytes('/?!\r\n', 'ascii')
-                    writer.write(init_seq)
+                    await writer.write(init_seq)
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
                     try:
