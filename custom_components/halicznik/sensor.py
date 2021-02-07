@@ -228,7 +228,21 @@ class SerialSensor(Entity):
                     Identification_Message = ""
                     try:
                         #line = await reader.readline()
-                        response = await reader.readline()
+                        #response = await reader.readline()
+
+                        while True:
+                            ch = await reader.read()
+                            # logger.debug("Read {}".format(ch))
+                            if len(ch) == 0:
+                                break
+                            response += ch
+                            if ch == 0x0a:
+                                break
+                            if (response[-1] == 0x0a):
+                                break
+                            await asyncio.sleep(0.05)
+
+
 
                         if response is None:
                             _LOGGER.debug("No response received upon first request")
