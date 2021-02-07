@@ -222,9 +222,9 @@ class SerialSensor(Entity):
                     writer.write(init_seq)
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
-                    #response = bytes()
+                    response = bytes()
                     #Identification_Message = bytes()
-                    response = "k"
+                    #response = "k"
                     Identification_Message = "p"
                     try:
                         #line = await reader.readline()
@@ -235,8 +235,8 @@ class SerialSensor(Entity):
                             continue
 
                         encoding = 'ascii'
-                        #Identification_Message = response.decode(encoding)
-                        Identification_Message = response
+                        Identification_Message = response.decode(encoding)
+                        #Identification_Message = response
                     except SerialException as exc:
                         _LOGGER.exception(
                             "Error while reading serial device %s: %s", device, exc
