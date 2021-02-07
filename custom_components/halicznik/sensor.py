@@ -113,6 +113,32 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, sensor.stop_serial_read)
     async_add_entities([sensor], True)
 
+async def read_data_block_from_serial(the_serial, end_byte=0x0a):
+    """
+    This function reads some bytes from serial interface
+    it returns an array of bytes if a timeout occurs or a given end byte is encountered
+    and otherwise None if an error occurred
+    :param the_serial: interface to read from
+    :param end_byte: the indicator for end of data by source endpoint
+    :returns the read data or None
+    """
+    response = bytes()
+    try:
+        while True:
+            ch = await the_serial.read()
+            # logger.debug("Read {}".format(ch))
+            if len(ch) == 0:
+                break
+            response += ch
+            if ch == end_byte:
+                break
+            if (response[-1] == end_byte):
+                break
+            await asyncio.sleep(0.01)
+    except Exception as e:
+        _LOGGER.debug("Warning {0}".format(e))
+        return None
+    return response
 
 class SerialSensor(Entity):
     """Representation of a Serial sensor."""
@@ -159,6 +185,8 @@ class SerialSensor(Entity):
                 self._dsrdtr,
             )
         )
+
+
 
     async def serial_read(
         self,
@@ -230,20 +258,7 @@ class SerialSensor(Entity):
                         #line = await reader.readline()
                         #response = await reader.readline()
 
-                        while True:
-                            ch = await reader.read()
-                            # logger.debug("Read {}".format(ch))
-                            if len(ch) == 0:
-                                break
-                            response += ch
-                            if ch == 0x0a:
-                                break
-                            if (response[-1] == 0x0a):
-                                break
-                            _LOGGER.debug("res: {}".format(response))
-                            await asyncio.sleep(0.05)
-
-
+                        response = await read_data_block_from_serial(reader)
 
                         if response is None:
                             _LOGGER.debug("No response received upon first request")
