@@ -123,11 +123,12 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
     :returns the read data or None
     """
     response = bytes()
+    ch=''
     try:
         _LOGGER.info("start read ")
         while True:
             #ch = await the_serial.read(1)
-            ch = the_serial.read(1)
+            ch = the_serial.read()
             # logger.debug("Read {}".format(ch))
             if len(ch) == 0:
                 break
@@ -138,7 +139,7 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
                 break
             await asyncio.sleep(0.01)
     except Exception as e:
-        _LOGGER.debug("Warning {0}".format(e))
+        _LOGGER.debug("Warning read_data_block_from_serial: {0}".format(e))
         return None
     return response
 
