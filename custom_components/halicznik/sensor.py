@@ -263,6 +263,50 @@ class SerialSensor(Entity):
                         #    "The manufacturer for {} is {} (out of {} given manufacturers)".format(manid, manname, len(
                         #        manufacturer_ids)))
 
+                        """
+                            Different smartmeters allow for different protocol modes. 
+                            The protocol mode decides whether the communication is fixed to a certain baudrate or might be speed up.
+                            Some meters do initiate a protocol by themselves with a fixed speed of 2400 baud e.g. Mode D
+                            However some meters specify a speed of 9600 Baud although they use protocol mode D (readonly)
+                            """
+                        Protocol_Mode = 'A'
+
+                        """
+                        The communication of the plugin always stays at the same speed, 
+                        Protocol indicator can be anything except for A-I, 0-9, /, ?
+                        """
+                        Baudrates_Protocol_Mode_A = 300
+                        Baudrates_Protocol_Mode_B = {'A': 600, 'B': 1200, 'C': 2400, 'D': 4800, 'E': 9600, 'F': 19200,
+                                                     'G': "reserved", 'H': "reserved", 'I': "reserved"}
+                        Baudrates_Protocol_Mode_C = {'0': 300, '1': 600, '2': 1200, '3': 2400, '4': 4800, '5': 9600,
+                                                     '6': 19200,
+                                                     '7': "reserved", '8': "reserved", '9': "reserved"}
+
+                        # always '3' but it is always initiated by the metering device so it can't be encountered here
+                        Baudrates_Protocol_Mode_D = {'3': 2400}
+                        Baudrates_Protocol_Mode_E = Baudrates_Protocol_Mode_C
+
+                        Baudrate_identification = chr(Identification_Message[4])
+                        if Baudrate_identification in Baudrates_Protocol_Mode_B:
+                            NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
+                            Protocol_Mode = 'B'
+                        elif Baudrate_identification in Baudrates_Protocol_Mode_C:
+                            NewBaudrate = Baudrates_Protocol_Mode_C[Baudrate_identification]
+                            Protocol_Mode = 'C'  # could also be 'E' but it doesn't make any difference here
+                        else:
+                            NewBaudrate = Baudrates_Protocol_Mode_A
+                            Protocol_Mode = 'A'
+
+                        _LOGGER.debug("Baudrate id is '{}' thus Protocol Mode is {} and "
+                                     "max Baudrate available is {} Bd".format(Baudrate_identification, Protocol_Mode,
+                                                                              NewBaudrate))
+
+                        if chr(Identification_Message[5]) == '\\':
+                            if chr(Identification_Message[6]) == '2':
+                                _LOGGER.debug("HDLC protocol could be used if it was implemented")
+                            else:
+                                _LOGGER.debug("Another protocol could probably be used if it was implemented")
+
                         line = Identification_Message.decode("utf-8").strip()
 
                         try:
