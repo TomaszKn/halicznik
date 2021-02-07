@@ -40,7 +40,8 @@ ACK = 0x06  # acknowledge
 CR = 0x0D  # carriage return
 LF = 0x0A  # linefeed
 BCC = 0x00  # Block check Character will contain the checksum immediately following the data packet
-StartChar = b'/'[0]
+#StartChar = b'/'[0]
+StartChar = b'\x02'[0]
 
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
