@@ -222,6 +222,7 @@ class SerialSensor(Entity):
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
                     response = bytes()
+                    Identification_Message = bytes()
                     try:
                         #line = await reader.readline()
                         response = await reader.readline()
@@ -231,7 +232,8 @@ class SerialSensor(Entity):
                             continue
 
                         encoding = 'ascii'
-                        Identification_Message = response.decode(encoding)
+                        #Identification_Message = response.decode(encoding)
+                        Identification_Message = response
                     except SerialException as exc:
                         _LOGGER.exception(
                             "Error while reading serial device %s: %s", device, exc
@@ -259,7 +261,7 @@ class SerialSensor(Entity):
                             await asyncio.sleep(10)
                             continue
 
-                        manid = str(Identification_Message[1:4], 'utf-8')
+                        #manid = str(Identification_Message[1:4], 'utf-8')
                         #manname = manufacturer_ids.get(manid, 'unknown')
                         #logger.debug(
                         #    "The manufacturer for {} is {} (out of {} given manufacturers)".format(manid, manname, len(
