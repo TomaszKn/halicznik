@@ -33,6 +33,16 @@ DEFAULT_XONXOFF = False
 DEFAULT_RTSCTS = False
 DEFAULT_DSRDTR = False
 
+SOH = 0x01  # start of header
+STX = 0x02  # start of text
+ETX = 0x03  # end of text
+ACK = 0x06  # acknowledge
+CR = 0x0D  # carriage return
+LF = 0x0A  # linefeed
+BCC = 0x00  # Block check Character will contain the checksum immediately following the data packet
+StartChar = b'/'[0]
+
+
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
         vol.Required(CONF_SERIAL_PORT): cv.string,
@@ -163,6 +173,20 @@ class SerialSensor(Entity):
     ):
         """Read the data from the port."""
         _LOGGER.info("init")
+        # open the serial communication
+        # about timeout: time tr between sending a request and an answer needs to be
+        # 200ms < tr < 1500ms for protocol mode A or B
+        # inter character time must be smaller than 1500 ms
+        # The time between the reception of a message and the transmission of an answer is:
+        # (20 ms) 200 ms = tr = 1 500 ms (see item 12) of 6.3.14).
+        # If a response has not been received, the waiting time of the transmitting equipment after
+        # transmission of the identification message, before it continues with the transmission, is:
+        # 1 500 ms < tt = 2 200 ms
+        # The time between two characters in a character sequence is:
+        # ta < 1 500 ms
+        wait_before_acknowledge = 0.4  # wait for 400 ms before sending the request to change baudrate
+        wait_after_acknowledge = 0.4  # wait for 400 ms after sending acknowledge
+
         logged_error = False
         while True:
             try:
@@ -201,8 +225,13 @@ class SerialSensor(Entity):
                     try:
                         #line = await reader.readline()
                         response = await reader.readline()
-                        encoding = 'utf-8'
-                        line = response.decode(encoding)
+
+                        if response is None:
+                            _LOGGER.debug("No response received upon first request")
+                            next
+
+                        encoding = 'ascii'
+                        Identification_Message = response.decode(encoding)
                     except SerialException as exc:
                         _LOGGER.exception(
                             "Error while reading serial device %s: %s", device, exc
@@ -210,7 +239,31 @@ class SerialSensor(Entity):
                         await self._handle_error()
                         break
                     else:
-                        line = line.decode("utf-8").strip()
+
+                        _LOGGER.debug("Identification Message is {}".format(Identification_Message))
+
+                        # need at least 7 bytes:
+                        # 1 byte "/"
+                        # 3 bytes short Identification
+                        # 1 byte speed indication
+                        # 2 bytes CR LF
+                        if (len(Identification_Message) < 7):
+                            _LOGGER.warning(
+                                "malformed identification message: '{}', abort query".format(Identification_Message))
+                            return
+
+                        if (Identification_Message[0] != StartChar):
+                            _LOGGER.warning("identification message '{}' does not start with '/',"
+                                           "abort query".format(Identification_Message))
+                            return
+
+                        manid = str(Identification_Message[1:4], 'utf-8')
+                        #manname = manufacturer_ids.get(manid, 'unknown')
+                        #logger.debug(
+                        #    "The manufacturer for {} is {} (out of {} given manufacturers)".format(manid, manname, len(
+                        #        manufacturer_ids)))
+
+                        line = Identification_Message.decode("utf-8").strip()
 
                         try:
                             data = json.loads(line)
