@@ -126,7 +126,7 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
     try:
         _LOGGER.info("start read ")
         while True:
-            ch = await the_serial.read()
+            ch = await the_serial.read(1)
             # logger.debug("Read {}".format(ch))
             if len(ch) == 0:
                 break
