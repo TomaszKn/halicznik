@@ -190,6 +190,7 @@ class SerialSensor(Entity):
             else:
                 _LOGGER.info("Serial device %s connected", device)
                 while True:
+                    await asyncio.sleep(5)
                     #Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
                     init_seq = bytes('/?!\r\n', 'ascii')
                     writer.write(init_seq)
@@ -222,6 +223,7 @@ class SerialSensor(Entity):
                         _LOGGER.debug("Received: %s", line)
                         self._state = line
                         self.async_write_ha_state()
+
 
     async def _handle_error(self):
         """Handle error for serial connection."""
