@@ -222,8 +222,10 @@ class SerialSensor(Entity):
                     writer.write(init_seq)
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
-                    response = bytes()
-                    Identification_Message = bytes()
+                    #response = bytes()
+                    #Identification_Message = bytes()
+                    response = "k"
+                    Identification_Message = "p"
                     try:
                         #line = await reader.readline()
                         response = await reader.readline()
@@ -316,7 +318,8 @@ class SerialSensor(Entity):
                             else:
                                 _LOGGER.debug("Another protocol could probably be used if it was implemented")
 
-                        line = Identification_Message.decode("ascii").strip()
+                        #line = Identification_Message.decode("ascii").strip()
+                        line = Identification_Message.strip()
 
                         try:
                             data = json.loads(line)
