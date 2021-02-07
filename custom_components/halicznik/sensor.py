@@ -255,7 +255,7 @@ class SerialSensor(Entity):
                         if (len(Identification_Message) < 7):
                             _LOGGER.warning(
                                 "malformed identification message: '{}', abort query".format(Identification_Message))
-                            Identification_Message = None
+                            Identification_Message = ''
                             await reader.flush()
                             await asyncio.sleep(10)
                             continue
@@ -263,7 +263,7 @@ class SerialSensor(Entity):
                         if (Identification_Message[0] != StartChar):
                             _LOGGER.warning("identification message '{}' does not start with '/',"
                                            "abort query".format(Identification_Message))
-                            Identification_Message = None
+                            Identification_Message = ''
                             await reader.flush()
                             await asyncio.sleep(10)
                             continue
