@@ -244,7 +244,7 @@ class SerialSensor(Entity):
                         await self._handle_error()
                         break
                     else:
-
+                        _LOGGER.debug("response is {}".format(response))
                         _LOGGER.debug("Identification Message is {}".format(Identification_Message))
 
                         # need at least 7 bytes:
@@ -256,7 +256,7 @@ class SerialSensor(Entity):
                             _LOGGER.warning(
                                 "malformed identification message: '{}', abort query".format(Identification_Message))
                             Identification_Message = ''
-                            await reader.flush()
+                            #await reader.flush()
                             await asyncio.sleep(10)
                             continue
 
@@ -264,7 +264,7 @@ class SerialSensor(Entity):
                             _LOGGER.warning("identification message '{}' does not start with '/',"
                                            "abort query".format(Identification_Message))
                             Identification_Message = ''
-                            await reader.flush()
+                            #await reader.flush()
                             await asyncio.sleep(10)
                             continue
 
@@ -280,7 +280,7 @@ class SerialSensor(Entity):
                             Some meters do initiate a protocol by themselves with a fixed speed of 2400 baud e.g. Mode D
                             However some meters specify a speed of 9600 Baud although they use protocol mode D (readonly)
                             """
-                        Protocol_Mode = 'A'
+                        Protocol_Mode = 'C'
 
                         """
                         The communication of the plugin always stays at the same speed, 
