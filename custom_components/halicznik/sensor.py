@@ -215,7 +215,7 @@ class SerialSensor(Entity):
             else:
                 _LOGGER.info("Serial device %s connected", device)
                 while True:
-                    await asyncio.sleep(5)
+
                     #Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
                     init_seq = bytes('/?!\r\n', 'ascii')
                     #await writer.write(init_seq)
@@ -256,8 +256,10 @@ class SerialSensor(Entity):
                             _LOGGER.warning(
                                 "malformed identification message: '{}', abort query".format(Identification_Message))
                             Identification_Message = ''
-                            reader.flush()
+                            response = ''
+
                             await asyncio.sleep(10)
+                            reader.flush()
                             continue
 
                         #if (Identification_Message[0] != StartChar):
@@ -265,8 +267,10 @@ class SerialSensor(Entity):
                             _LOGGER.warning("identification message '{}' does not start with '/',"
                                            "abort query".format(Identification_Message))
                             Identification_Message = ''
-                            reader.flush()
+                            response = ''
+
                             await asyncio.sleep(10)
+                            reader.flush()
                             continue
 
                         #manid = str(Identification_Message[1:4], 'utf-8')
@@ -338,6 +342,7 @@ class SerialSensor(Entity):
                         _LOGGER.debug("Received: %s", line)
                         self._state = line
                         self.async_write_ha_state()
+                        await asyncio.sleep(5)
 
 
     async def _handle_error(self):
