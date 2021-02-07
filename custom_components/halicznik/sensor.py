@@ -126,19 +126,19 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
     ch=''
     try:
         #_LOGGER.info("start read ")
-        while True:
+        while not the_serial.at_eof() :
             #ch = await the_serial.read(1)
             #ch = the_serial.read()
-            ch = the_serial.read(1)
+            ch = await the_serial.readuntil(end_byte)
             # logger.debug("Read {}".format(ch))
             #if len(ch) == 0:
-            if not ch:
-                break
-            response += ch
-            if ch == end_byte:
-                break
-            if (response[-1] == end_byte):
-                break
+            #if not ch:
+            #    break
+            #response += ch
+            #if ch == end_byte:
+            #    break
+            #if (response[-1] == end_byte):
+            #    break
             await asyncio.sleep(0.01)
     except Exception as e:
         _LOGGER.debug("Warning read_data_block_from_serial: {0}".format(e))
