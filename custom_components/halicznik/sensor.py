@@ -225,7 +225,7 @@ class SerialSensor(Entity):
                     response = bytes()
                     #Identification_Message = bytes()
                     #response = "k"
-                    Identification_Message = "p"
+                    Identification_Message = ""
                     try:
                         #line = await reader.readline()
                         response = await reader.readline()
@@ -256,15 +256,16 @@ class SerialSensor(Entity):
                             _LOGGER.warning(
                                 "malformed identification message: '{}', abort query".format(Identification_Message))
                             Identification_Message = ''
-                            #await reader.flush()
+                            reader.flush()
                             await asyncio.sleep(10)
                             continue
 
-                        if (Identification_Message[0] != StartChar):
+                        #if (Identification_Message[0] != StartChar):
+                        if (Identification_Message[0] != '/'):
                             _LOGGER.warning("identification message '{}' does not start with '/',"
                                            "abort query".format(Identification_Message))
                             Identification_Message = ''
-                            #await reader.flush()
+                            reader.flush()
                             await asyncio.sleep(10)
                             continue
 
