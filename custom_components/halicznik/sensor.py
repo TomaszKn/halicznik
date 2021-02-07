@@ -240,6 +240,7 @@ class SerialSensor(Entity):
                                 break
                             if (response[-1] == 0x0a):
                                 break
+                            _LOGGER.debug("res: {}".format(response))
                             await asyncio.sleep(0.05)
 
 
