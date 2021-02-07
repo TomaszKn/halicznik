@@ -228,7 +228,7 @@ class SerialSensor(Entity):
 
                         if response is None:
                             _LOGGER.debug("No response received upon first request")
-                            next
+                            continue
 
                         encoding = 'ascii'
                         Identification_Message = response.decode(encoding)
@@ -250,12 +250,14 @@ class SerialSensor(Entity):
                         if (len(Identification_Message) < 7):
                             _LOGGER.warning(
                                 "malformed identification message: '{}', abort query".format(Identification_Message))
-                            return
+                            await asyncio.sleep(10)
+                            continue
 
                         if (Identification_Message[0] != StartChar):
                             _LOGGER.warning("identification message '{}' does not start with '/',"
                                            "abort query".format(Identification_Message))
-                            return
+                            await asyncio.sleep(10)
+                            continue
 
                         manid = str(Identification_Message[1:4], 'utf-8')
                         #manname = manufacturer_ids.get(manid, 'unknown')
