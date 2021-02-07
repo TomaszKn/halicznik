@@ -129,7 +129,7 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
         while not the_serial.at_eof() :
             #ch = await the_serial.read(1)
             #ch = the_serial.read()
-            response = the_serial.readuntil(end_byte)
+            response = await the_serial.readuntil(end_byte)
             # logger.debug("Read {}".format(ch))
             #if len(ch) == 0:
             #if not ch:
