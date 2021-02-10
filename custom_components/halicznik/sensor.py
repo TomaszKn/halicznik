@@ -42,6 +42,7 @@ LF = 0x0A  # linefeed
 BCC = 0x00  # Block check Character will contain the checksum immediately following the data packet
 #StartChar = b'/'[0]
 StartChar = STX
+InitialBaudrate = 300
 
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
@@ -255,7 +256,14 @@ class SerialSensor(Entity):
                     #Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
                     init_seq = bytes('/?!\r\n', 'ascii')
                     #await writer.write(init_seq)
-                    writer.write(init_seq)
+                    try:
+                        writer.write(init_seq)
+                    except SerialException as exc:
+                        _LOGGER.exception(
+                            "Error while write serial device %s: %s", device, exc
+                        )
+                        await self._handle_error()
+                        break
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
                     #response = bytes()
@@ -282,7 +290,7 @@ class SerialSensor(Entity):
                         await self._handle_error()
                         break
                     else:
-                        _LOGGER.debug("response is {}".format(response))
+                        #_LOGGER.debug("response is {}".format(response))
                         _LOGGER.debug("Identification Message is {}".format(Identification_Message))
 
                         # need at least 7 bytes:
@@ -339,8 +347,9 @@ class SerialSensor(Entity):
                         # always '3' but it is always initiated by the metering device so it can't be encountered here
                         Baudrates_Protocol_Mode_D = {'3': 2400}
                         Baudrates_Protocol_Mode_E = Baudrates_Protocol_Mode_C
-
+                        _LOGGER.debug("Calculate baud")
                         Baudrate_identification = chr(Identification_Message[4])
+                        _LOGGER.debug("Speed code {}".format(Baudrate_identification))
                         if Baudrate_identification in Baudrates_Protocol_Mode_B:
                             NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
                             Protocol_Mode = 'B'
@@ -360,8 +369,50 @@ class SerialSensor(Entity):
                                 _LOGGER.debug("HDLC protocol could be used if it was implemented")
                             else:
                                 _LOGGER.debug("Another protocol could probably be used if it was implemented")
+                        _LOGGER.debug("Speed code {}".format(Baudrate_identification))
 
-                        #line = Identification_Message.decode("ascii").strip()
+                        # for protocol C or E we now send an acknowledge and include the new baudrate parameter
+                        # maybe todo
+                        # we could implement here a baudrate that is fixed to somewhat lower speed if we need to
+                        # read out a smartmeter with broken communication
+                        Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
+
+                        Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
+
+                        if Protocol_Mode == 'C':
+                            # the speed change in communication is initiated from the reading device
+                            await asyncio.sleep(wait_before_acknowledge)
+                            _LOGGER.debug("Using protocol mode C, send acknowledge {} "
+                                         "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
+                            try:
+                                writer.write(Acknowledge)
+                            except Exception as e:
+                                _LOGGER.warning("Write Warning {0}".format(e))
+                                return
+                            await asyncio.sleep(wait_after_acknowledge)
+                            # dlms_serial.flush()
+                            # dlms_serial.reset_input_buffer()
+                            if (NewBaudrate != InitialBaudrate):
+                                # change request to set higher baudrate
+                                try:
+                                    writer.baudrate = NewBaudrate
+                                except Exception as e:
+                                    _LOGGER.warning("New baudrate Write Warning {0}".format(e))
+                                return
+
+                        while True:
+                            telegram = await reader.readline()
+
+                            if telegram is None:
+                                _LOGGER.debug("No telegram received upon first request")
+                                continue
+
+                            encoding = 'ascii'
+                            Telegram_Message = telegram.decode(encoding)
+                            _LOGGER.warning("New Telegram_Message {0}".format(Telegram_Message))
+
+
+                        # line = Identification_Message.decode("ascii").strip()
                         line = Identification_Message.strip()
 
                         try:
