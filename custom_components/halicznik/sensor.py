@@ -352,7 +352,7 @@ class SerialSensor(Entity):
                             Baudrate_identification = ' '
                             # Baudrate_identification = chr(Identification_Message[4])
                             # Baudrate_identification = Identification_Message[4]
-                            Baudrate_identification = '5'
+                            Baudrate_identification = '4'
                             _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
                             _LOGGER.error("Baudrate_identification Exception: {0}".format(e))
@@ -395,7 +395,7 @@ class SerialSensor(Entity):
                             #Acknowledge = bytearray('\x06000\r\n', 'ascii')
                             #rList = [StartSQ,  Baudrate_identification.encode(), Action, '\r', '\n']
                             #Acknowledge = bytearray(rList)
-                            Acknowledge = bytearray('\x06050\r\n', 'ascii')
+                            Acknowledge = bytearray('\x06040\r\n', 'ascii')
                         except Exception as e:
                             _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
                             continue
@@ -407,14 +407,17 @@ class SerialSensor(Entity):
                                           "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
                             try:
                                 writer.write(Acknowledge)
+                                _LOGGER.debug("writer.write(Acknowledge)")
                             except Exception as e:
                                 _LOGGER.warning("Write Warning {0}".format(e))
                                 return
                             await asyncio.sleep(wait_after_acknowledge)
+                            _LOGGER.debug("wait_after_acknowledge")
                             # dlms_serial.flush()
                             # dlms_serial.reset_input_buffer()
                             if (NewBaudrate != InitialBaudrate):
                                 # change request to set higher baudrate
+                                _LOGGER.debug("change request to set higher baudrate")
                                 try:
                                     writer.baudrate = NewBaudrate
                                 except Exception as e:
