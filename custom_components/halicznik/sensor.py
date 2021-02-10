@@ -351,11 +351,11 @@ class SerialSensor(Entity):
                         try:
                             _LOGGER.debug("Baudrate_identification mess:  %s", str(Identification_Message[4]))
                             #Baudrate_identification = chr(Identification_Message[4])
-                            Baudrate_identification = 5
-                            #_LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
+                            Baudrate_identification = '5'
+                            _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
                             _LOGGER.error("Baudrate_identification Exception: {0}".format(e))
-                            Baudrate_identification = 5
+                            Baudrate_identification = '5'
 
                         _LOGGER.debug("Speed code {}".format(Baudrate_identification))
                         if Baudrate_identification in Baudrates_Protocol_Mode_B:
