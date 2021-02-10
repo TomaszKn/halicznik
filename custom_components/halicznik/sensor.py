@@ -348,7 +348,11 @@ class SerialSensor(Entity):
                         Baudrates_Protocol_Mode_D = {'3': 2400}
                         Baudrates_Protocol_Mode_E = Baudrates_Protocol_Mode_C
                         _LOGGER.debug("Calculate baud")
-                        Baudrate_identification = chr(Identification_Message[4])
+                        try:
+                            Baudrate_identification = chr(Identification_Message[4])
+                        except Exception as e:
+                            _LOGGER.error("Baudrate_identification: {0}".format(e))
+
                         _LOGGER.debug("Speed code {}".format(Baudrate_identification))
                         if Baudrate_identification in Baudrates_Protocol_Mode_B:
                             NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
