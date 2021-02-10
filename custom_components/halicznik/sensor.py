@@ -349,11 +349,11 @@ class SerialSensor(Entity):
                         Baudrates_Protocol_Mode_E = Baudrates_Protocol_Mode_C
                         _LOGGER.debug("Calculate baud")
                         try:
-                            _LOGGER.debug("Baudrate_identification mess:  %s", str(Identification_Message[4]))
+                            _LOGGER.debug("Baudrate_identification from messege:  %s", str(Identification_Message[4]))
                             Baudrate_identification = ' '
                             #Baudrate_identification = chr(Identification_Message[4])
-                            Baudrate_identification = Identification_Message[4]
-                            #Baudrate_identification = '5'
+                            #Baudrate_identification = Identification_Message[4]
+                            Baudrate_identification = '5'
                             _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
                             _LOGGER.error("Baudrate_identification Exception: {0}".format(e))
@@ -388,7 +388,10 @@ class SerialSensor(Entity):
                         # read out a smartmeter with broken communication
                         Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
 
-                        Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
+                        #Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
+                        #Acknowledge = bytes('/?!\r\n', 'ascii')
+                        Acknowledge = bytes(ACK + Baudrate_identification.encode() + Action + b'\r\n', 'ascii')
+
 
                         if Protocol_Mode == 'C':
                             # the speed change in communication is initiated from the reading device
@@ -410,7 +413,7 @@ class SerialSensor(Entity):
                                 except Exception as e:
                                     _LOGGER.warning("New baudrate Write Warning {0}".format(e))
                                 return
-
+                        _LOGGER.debug(" Start reading telegrams")
                         while True:
                             telegram = await reader.readline()
 
