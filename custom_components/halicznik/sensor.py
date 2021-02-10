@@ -349,8 +349,9 @@ class SerialSensor(Entity):
                         Baudrates_Protocol_Mode_E = Baudrates_Protocol_Mode_C
                         _LOGGER.debug("Calculate baud")
                         try:
-                            _LOGGER.debug("Baudrate_identification mess: {0}".format(chr(Identification_Message[4])))
+                            _LOGGER.debug("Baudrate_identification mess: %c , %s", (Identification_Message[4]), (Identification_Message[4]))
                             Baudrate_identification = chr(Identification_Message[4])
+                            _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
                             _LOGGER.error("Baudrate_identification: {0}".format(e))
 
