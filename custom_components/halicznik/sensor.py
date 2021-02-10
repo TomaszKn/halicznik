@@ -352,7 +352,7 @@ class SerialSensor(Entity):
                             Baudrate_identification = ' '
                             # Baudrate_identification = chr(Identification_Message[4])
                             # Baudrate_identification = Identification_Message[4]
-                            Baudrate_identification = '4'
+                            Baudrate_identification = '0'
                             _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
                             _LOGGER.error("Baudrate_identification Exception: {0}".format(e))
@@ -395,7 +395,7 @@ class SerialSensor(Entity):
                             #Acknowledge = bytearray('\x06000\r\n', 'ascii')
                             #rList = [StartSQ,  Baudrate_identification.encode(), Action, '\r', '\n']
                             #Acknowledge = bytearray(rList)
-                            Acknowledge = bytearray('\x06040\r\n', 'ascii')
+                            Acknowledge = bytearray('\x06000\r\n', 'ascii')
                         except Exception as e:
                             _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
                             continue
@@ -429,7 +429,7 @@ class SerialSensor(Entity):
                             telegram = await reader.readline()
 
                             if telegram is None:
-                                _LOGGER.debug("No telegram received upon first request")
+                                _LOGGER.debug("Koniec")
                                 continue
 
                             encoding = 'ascii'
@@ -437,7 +437,8 @@ class SerialSensor(Entity):
                             _LOGGER.warning("New Telegram_Message {0}".format(Telegram_Message))
 
                         # line = Identification_Message.decode("ascii").strip()
-                        line = Identification_Message.strip()
+                        #line = Identification_Message.strip()
+                        line = Telegram_Message
 
                         try:
                             data = json.loads(line)
