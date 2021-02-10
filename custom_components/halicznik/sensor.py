@@ -426,6 +426,7 @@ class SerialSensor(Entity):
                                 return
                         _LOGGER.debug(" Start reading telegrams")
                         while True:
+                            telegram = None
                             telegram = await reader.readline()
 
                             if telegram is None:
@@ -435,7 +436,11 @@ class SerialSensor(Entity):
                             encoding = 'ascii'
                             Telegram_Message = telegram.decode(encoding)
                             _LOGGER.warning("New Telegram_Message {0}".format(Telegram_Message))
+                            self._state = line
+                            self.async_write_ha_state()
 
+
+                        """
                         # line = Identification_Message.decode("ascii").strip()
                         #line = Identification_Message.strip()
                         line = Telegram_Message
@@ -456,7 +461,8 @@ class SerialSensor(Entity):
                         _LOGGER.debug("Received: %s", line)
                         self._state = line
                         self.async_write_ha_state()
-                        await asyncio.sleep(5)
+                        """
+                        await asyncio.sleep(10)
 
     async def _handle_error(self):
         """Handle error for serial connection."""
