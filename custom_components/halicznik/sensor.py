@@ -393,8 +393,9 @@ class SerialSensor(Entity):
                         try:
                             #Acknowledge = bytes(StartSQ + Baudrate_identification.encode() + Action + b'\r\n', 'ascii')
                             #Acknowledge = bytearray('\x06000\r\n', 'ascii')
-                            rList = [StartSQ,  Baudrate_identification.encode(), Action, '\r', '\n']
-                            Acknowledge = bytearray(rList)
+                            #rList = [StartSQ,  Baudrate_identification.encode(), Action, '\r', '\n']
+                            #Acknowledge = bytearray(rList)
+                            Acknowledge = bytearray('\x06050\r\n', 'ascii')
                         except Exception as e:
                             _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
                             continue
