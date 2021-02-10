@@ -420,6 +420,7 @@ class SerialSensor(Entity):
                                 _LOGGER.debug("change request to set higher baudrate")
                                 try:
                                     writer.baudrate = NewBaudrate
+                                    reader.baudrate = NewBaudrate
                                 except Exception as e:
                                     _LOGGER.warning("New baudrate Write Warning {0}".format(e))
                                 return
