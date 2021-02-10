@@ -258,15 +258,15 @@ class SerialSensor(Entity):
                     writer.write(init_seq)
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
-                    response = bytes()
+                    #response = bytes()
                     #Identification_Message = bytes()
                     #response = "k"
                     Identification_Message = ""
                     try:
-                        #line = await reader.readline()
+                        line = await reader.readline()
                         #response = await reader.readline()
-
-                        response = await read_data_block_from_serial(reader)
+                        response = line
+                        #response = await read_data_block_from_serial(reader)
 
                         if response is None:
                             _LOGGER.debug("No response received upon first request")
