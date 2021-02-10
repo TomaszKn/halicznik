@@ -40,10 +40,9 @@ ACK = 0x06  # acknowledge
 CR = 0x0D  # carriage return
 LF = 0x0A  # linefeed
 BCC = 0x00  # Block check Character will contain the checksum immediately following the data packet
-#StartChar = b'/'[0]
+# StartChar = b'/'[0]
 StartChar = STX
 InitialBaudrate = 300
-
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend(
     {
@@ -114,6 +113,7 @@ async def async_setup_platform(hass, config, async_add_entities, discovery_info=
     hass.bus.async_listen_once(EVENT_HOMEASSISTANT_STOP, sensor.stop_serial_read)
     async_add_entities([sensor], True)
 
+
 async def read_data_block_from_serial(the_serial, end_byte=0x0a):
     """
     This function reads some bytes from serial interface
@@ -124,22 +124,22 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
     :returns the read data or None
     """
     response = bytes()
-    ch=''
+    ch = ''
     try:
-        #_LOGGER.info("start read ")
-        while not the_serial.at_eof() :
-            #ch = await the_serial.read(1)
-            #ch = the_serial.read()
-            #response = the_serial.readuntil(end_byte)
+        # _LOGGER.info("start read ")
+        while not the_serial.at_eof():
+            # ch = await the_serial.read(1)
+            # ch = the_serial.read()
+            # response = the_serial.readuntil(end_byte)
             response = await the_serial.readline()
             # logger.debug("Read {}".format(ch))
-            #if len(ch) == 0:
-            #if not ch:
+            # if len(ch) == 0:
+            # if not ch:
             #    break
-            #response += ch
-            #if ch == end_byte:
+            # response += ch
+            # if ch == end_byte:
             #    break
-            #if (response[-1] == end_byte):
+            # if (response[-1] == end_byte):
             #    break
             await asyncio.sleep(0.01)
     except Exception as e:
@@ -149,21 +149,22 @@ async def read_data_block_from_serial(the_serial, end_byte=0x0a):
         return None
     return response
 
+
 class SerialSensor(Entity):
     """Representation of a Serial sensor."""
 
     def __init__(
-        self,
-        name,
-        port,
-        baudrate,
-        bytesize,
-        parity,
-        stopbits,
-        xonxoff,
-        rtscts,
-        dsrdtr,
-        value_template,
+            self,
+            name,
+            port,
+            baudrate,
+            bytesize,
+            parity,
+            stopbits,
+            xonxoff,
+            rtscts,
+            dsrdtr,
+            value_template,
     ):
         """Initialize the Serial sensor."""
         self._name = name
@@ -195,19 +196,17 @@ class SerialSensor(Entity):
             )
         )
 
-
-
     async def serial_read(
-        self,
-        device,
-        baudrate,
-        bytesize,
-        parity,
-        stopbits,
-        xonxoff,
-        rtscts,
-        dsrdtr,
-        **kwargs,
+            self,
+            device,
+            baudrate,
+            bytesize,
+            parity,
+            stopbits,
+            xonxoff,
+            rtscts,
+            dsrdtr,
+            **kwargs,
     ):
         """Read the data from the port."""
         _LOGGER.info("init")
@@ -253,9 +252,9 @@ class SerialSensor(Entity):
                 _LOGGER.info("Serial device %s connected", device)
                 while True:
 
-                    #Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
+                    # Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
                     init_seq = bytes('/?!\r\n', 'ascii')
-                    #await writer.write(init_seq)
+                    # await writer.write(init_seq)
                     try:
                         writer.write(init_seq)
                     except SerialException as exc:
@@ -266,15 +265,15 @@ class SerialSensor(Entity):
                         break
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
-                    #response = bytes()
-                    #Identification_Message = bytes()
-                    #response = "k"
+                    # response = bytes()
+                    # Identification_Message = bytes()
+                    # response = "k"
                     Identification_Message = ""
                     try:
                         line = await reader.readline()
-                        #response = await reader.readline()
+                        # response = await reader.readline()
                         response = line
-                        #response = await read_data_block_from_serial(reader)
+                        # response = await read_data_block_from_serial(reader)
 
                         if response is None:
                             _LOGGER.debug("No response received upon first request")
@@ -282,7 +281,7 @@ class SerialSensor(Entity):
 
                         encoding = 'ascii'
                         Identification_Message = response.decode(encoding)
-                        #Identification_Message = response
+                        # Identification_Message = response
                     except SerialException as exc:
                         _LOGGER.exception(
                             "Error while reading serial device %s: %s", device, exc
@@ -290,7 +289,7 @@ class SerialSensor(Entity):
                         await self._handle_error()
                         break
                     else:
-                        #_LOGGER.debug("response is {}".format(response))
+                        # _LOGGER.debug("response is {}".format(response))
                         _LOGGER.debug("Identification Message is {}".format(Identification_Message))
 
                         # need at least 7 bytes:
@@ -308,10 +307,10 @@ class SerialSensor(Entity):
                             reader.flush()
                             continue
 
-                        #if (Identification_Message[0] != StartChar):
+                        # if (Identification_Message[0] != StartChar):
                         if (Identification_Message[0] != '/'):
                             _LOGGER.warning("identification message '{}' does not start with '/',"
-                                           "abort query".format(Identification_Message))
+                                            "abort query".format(Identification_Message))
                             Identification_Message = ''
                             response = ''
 
@@ -319,9 +318,9 @@ class SerialSensor(Entity):
                             reader.flush()
                             continue
 
-                        #manid = str(Identification_Message[1:4], 'utf-8')
-                        #manname = manufacturer_ids.get(manid, 'unknown')
-                        #logger.debug(
+                        # manid = str(Identification_Message[1:4], 'utf-8')
+                        # manname = manufacturer_ids.get(manid, 'unknown')
+                        # logger.debug(
                         #    "The manufacturer for {} is {} (out of {} given manufacturers)".format(manid, manname, len(
                         #        manufacturer_ids)))
 
@@ -351,8 +350,8 @@ class SerialSensor(Entity):
                         try:
                             _LOGGER.debug("Baudrate_identification from messege:  %s", str(Identification_Message[4]))
                             Baudrate_identification = ' '
-                            #Baudrate_identification = chr(Identification_Message[4])
-                            #Baudrate_identification = Identification_Message[4]
+                            # Baudrate_identification = chr(Identification_Message[4])
+                            # Baudrate_identification = Identification_Message[4]
                             Baudrate_identification = '5'
                             _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
@@ -371,8 +370,8 @@ class SerialSensor(Entity):
                             Protocol_Mode = 'A'
 
                         _LOGGER.debug("Baudrate id is '{}' thus Protocol Mode is {} and "
-                                     "max Baudrate available is {} Bd".format(Baudrate_identification, Protocol_Mode,
-                                                                              NewBaudrate))
+                                      "max Baudrate available is {} Bd".format(Baudrate_identification, Protocol_Mode,
+                                                                               NewBaudrate))
                         """
                         if chr(Identification_Message[5]) == '\\':
                             if chr(Identification_Message[6]) == '2':
@@ -387,17 +386,21 @@ class SerialSensor(Entity):
                         # we could implement here a baudrate that is fixed to somewhat lower speed if we need to
                         # read out a smartmeter with broken communication
                         Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
+                        StartSQ = b'\x060'
+                        # Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
+                        # Acknowledge = bytes('/?!\r\n', 'ascii')
 
-                        #Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
-                        #Acknowledge = bytes('/?!\r\n', 'ascii')
-                        Acknowledge = bytes(ACK + Baudrate_identification.encode() + Action + b'\r\n', 'ascii')
-
+                        try:
+                            Acknowledge = bytes(StartSQ + Baudrate_identification.encode() + Action + b'\r\n', 'ascii')
+                        except Exception as e:
+                            _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
+                            continue
 
                         if Protocol_Mode == 'C':
                             # the speed change in communication is initiated from the reading device
                             await asyncio.sleep(wait_before_acknowledge)
                             _LOGGER.debug("Using protocol mode C, send acknowledge {} "
-                                         "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
+                                          "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
                             try:
                                 writer.write(Acknowledge)
                             except Exception as e:
@@ -425,7 +428,6 @@ class SerialSensor(Entity):
                             Telegram_Message = telegram.decode(encoding)
                             _LOGGER.warning("New Telegram_Message {0}".format(Telegram_Message))
 
-
                         # line = Identification_Message.decode("ascii").strip()
                         line = Identification_Message.strip()
 
@@ -446,7 +448,6 @@ class SerialSensor(Entity):
                         self._state = line
                         self.async_write_ha_state()
                         await asyncio.sleep(5)
-
 
     async def _handle_error(self):
         """Handle error for serial connection."""
