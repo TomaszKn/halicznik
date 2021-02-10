@@ -350,7 +350,8 @@ class SerialSensor(Entity):
                         _LOGGER.debug("Calculate baud")
                         try:
                             _LOGGER.debug("Baudrate_identification mess:  %s", str(Identification_Message[4]))
-                            Baudrate_identification = chr(Identification_Message[4])
+                            #Baudrate_identification = chr(Identification_Message[4])
+                            Baudrate_identification=5
                             _LOGGER.debug("Baudrate_identification str: %s", str(Baudrate_identification))
                         except Exception as e:
                             _LOGGER.error("Baudrate_identification: {0}".format(e))
