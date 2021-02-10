@@ -251,10 +251,10 @@ class SerialSensor(Entity):
             else:
                 _LOGGER.info("Serial device %s connected", device)
                 while True:
+                    _LOGGER.info("Start While")
 
-                    # Request_message = '/?!\r\n'  # IEC 62056-21:2002(E) 6.3.1
                     init_seq = bytes('/?!\r\n', 'ascii')
-                    # await writer.write(init_seq)
+
                     try:
                         writer.write(init_seq)
                     except SerialException as exc:
@@ -265,15 +265,12 @@ class SerialSensor(Entity):
                         break
                     _LOGGER.info("SEND init_seq ")
                     await asyncio.sleep(0.5)
-                    # response = bytes()
-                    # Identification_Message = bytes()
-                    # response = "k"
                     Identification_Message = ""
                     try:
                         line = await reader.readline()
-                        # response = await reader.readline()
+
                         response = line
-                        # response = await read_data_block_from_serial(reader)
+
 
                         if response is None:
                             _LOGGER.debug("No response received upon first request")
@@ -289,7 +286,7 @@ class SerialSensor(Entity):
                         await self._handle_error()
                         break
                     else:
-                        # _LOGGER.debug("response is {}".format(response))
+
                         _LOGGER.debug("Identification Message is {}".format(Identification_Message))
 
                         # need at least 7 bytes:
@@ -387,14 +384,8 @@ class SerialSensor(Entity):
                         # read out a smartmeter with broken communication
                         Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
                         StartSQ = b'\x060'
-                        # Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
-                        # Acknowledge = bytes('/?!\r\n', 'ascii')
 
                         try:
-                            #Acknowledge = bytes(StartSQ + Baudrate_identification.encode() + Action + b'\r\n', 'ascii')
-                            #Acknowledge = bytearray('\x06000\r\n', 'ascii')
-                            #rList = [StartSQ,  Baudrate_identification.encode(), Action, '\r', '\n']
-                            #Acknowledge = bytearray(rList)
                             Acknowledge = bytearray('\x06000\r\n', 'ascii')
                         except Exception as e:
                             _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
@@ -413,8 +404,6 @@ class SerialSensor(Entity):
                                 return
                             await asyncio.sleep(wait_after_acknowledge)
                             _LOGGER.debug("wait_after_acknowledge")
-                            # dlms_serial.flush()
-                            # dlms_serial.reset_input_buffer()
                             if (NewBaudrate != InitialBaudrate):
                                 # change request to set higher baudrate
                                 _LOGGER.debug("change request to set higher baudrate")
@@ -431,6 +420,12 @@ class SerialSensor(Entity):
 
                             if telegram is None:
                                 _LOGGER.debug("Koniec")
+                                await asyncio.sleep(10)
+                                continue
+
+                            if len(telegram) < 1 :
+                                _LOGGER.debug("Koniec 2")
+                                await asyncio.sleep(10)
                                 continue
 
                             encoding = 'ascii'
