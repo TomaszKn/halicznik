@@ -428,6 +428,11 @@ class SerialSensor(Entity):
                                 await asyncio.sleep(10)
                                 continue
 
+                            if reader.feed_eof() :
+                                _LOGGER.debug("Koniec 3")
+                                await asyncio.sleep(10)
+                                continue
+
                             encoding = 'ascii'
                             Telegram_Message = telegram.decode(encoding)
                             _LOGGER.warning("New Telegram_Message {0}".format(Telegram_Message))
