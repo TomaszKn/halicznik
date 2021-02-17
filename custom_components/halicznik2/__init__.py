@@ -88,7 +88,7 @@ async def async_remove_entry(hass, entry) -> None:
     return True
 
 
-class AmsHub:
+class LiHub:
     """AmsHub wrapper for all sensors."""
 
     def __init__(self, hass, entry):
@@ -96,14 +96,14 @@ class AmsHub:
         self._hass = hass
         port = entry[CONF_SERIAL_PORT]
         _LOGGER.debug("Connecting to HAN using port %s", port)
-        parity = entry.get(CONF_PARITY)
+        parity = serial.PARITY_EVEN
         self.meter_manufacturer = entry.get(CONF_METER_MANUFACTURER)
         self.sensor_data = {}
         self._attrs = {}
         self._running = True
         self._ser = serial.Serial(
             port=port,
-            baudrate=DEFAULT_BAUDRATE,
+            baudrate=300,
             parity=parity,
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.EIGHTBITS,
@@ -125,6 +125,10 @@ class AmsHub:
         byte_counter = 0
         bytelist = []
         while self._running:
+
+
+
+
             buf = self._ser.read()
             if buf:
                 bytelist.extend(buf)
@@ -133,6 +137,12 @@ class AmsHub:
                 byte_counter = byte_counter + 1
             else:
                 continue
+
+
+
+
+
+
 
     @property
     def meter_serial(self):
@@ -153,12 +163,9 @@ class AmsHub:
                 self.meter_manufacturer = self._find_parser(pkg)
                 parser = self.meter_manufacturer
 
-        if self.meter_manufacturer == "aidon":
-            parser = Aidon
-        elif self.meter_manufacturer == "kaifa":
-            parser = Kaifa
-        elif self.meter_manufacturer == "kamstrup":
-            parser = Kamstrup
+        if self.meter_manufacturer == "ec3":
+            parser = EC3
+
 
         while self._running:
             try:
@@ -174,16 +181,7 @@ class AmsHub:
 
     def _find_parser(self, pkg):
         """Helper to detect meter manufacturer."""
-
-        def _test_meter(pkg, meter):
-            """Meter tester."""
-            match = []
-            _LOGGER.debug("Testing for %s", meter)
-            for i in range(len(pkg)):
-                if pkg[i] == meter[0] and pkg[i : i + len(meter)] == meter:
-                    match.append(meter)
-            return meter in match
-
+        """
         if _test_meter(pkg, AIDON_METER_SEQ):
             _LOGGER.info("Detected Adion meter")
             return "aidon"
@@ -194,15 +192,17 @@ class AmsHub:
             _LOGGER.info("Detected Kamstrup meter")
             return "kamstrup"
         _LOGGER.warning("No parser detected")
+        """
+        pass
 
     @property
     def data(self):
         """Return sensor data."""
         return self.sensor_data
 
-    def missing_attrs(self, data=None):
+    #def missing_attrs(self, data=None):
         """Check if we have any missing attrs that we need and set them."""
-        if data is None:
+    """    if data is None:
             data = self.data
 
         attrs_to_check = ["meter_serial", "meter_manufacturer", "meter_type"]
@@ -222,12 +222,13 @@ class AmsHub:
                 return False
         else:
             return False
+    """
 
     def _check_for_new_sensors_and_update(self, sensor_data):
         """Compare sensor list and update."""
         new_devices = []
         sensors_in_data = set(sensor_data.keys())
-        new_devices = sensors_in_data.difference(AMS_DEVICES)
+        new_devices = sensors_in_data.difference(LICZNIK_DEVICES)
 
         if len(new_devices):
             # Check that we have all the info we need before the sensors are
@@ -240,7 +241,7 @@ class AmsHub:
             else:
                 _LOGGER.debug("Got %s new devices from the serial", len(new_devices))
                 _LOGGER.debug("DUMP %s", sensor_data)
-                async_dispatcher_send(self._hass, SIGNAL_NEW_AMS_SENSOR)
+                async_dispatcher_send(self._hass, SIGNAL_NEW_TELEGRAM_SENSOR)
         else:
             # _LOGGER.debug("sensors are the same, updating states")
-            async_dispatcher_send(self._hass, SIGNAL_UPDATE_AMS)
+            async_dispatcher_send(self._hass, SIGNAL_UPDATE_TELEGRAM)
