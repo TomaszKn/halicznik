@@ -32,9 +32,9 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
         for sensor_name in data:
             # Check that we dont add a new sensor that already exists.
             # We only try to update the state for sensors in AMS_DEVICES
-            if sensor_name not in AMS_DEVICES:
-                AMS_DEVICES.add(sensor_name)
-                if sensor_name in AMS_SENSOR_CREATED_BUT_NOT_READ:
+            if sensor_name not in LICZNIK_DEVICES:
+                LICZNIK_DEVICES.add(sensor_name)
+                if sensor_name in LICZNIK_SENSOR_CREATED_BUT_NOT_READ:
                     # The hourly sensors is added manually at the start.
                     continue
 
@@ -43,12 +43,13 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                     "state": data.get(sensor_name, {}).get("state"),
                     "attributes": data.get(sensor_name, {}).get("attributes"),
                 }
-                sensors.append(AmsSensor(hass, sensor_states))
+                sensors.append(LicznikSensor(hass, sensor_states))
 
         # Handle the hourly sensors.
+        """
         for hourly in HOURLY_SENSORS:
-            if hourly not in data and hourly not in AMS_SENSOR_CREATED_BUT_NOT_READ:
-                AMS_SENSOR_CREATED_BUT_NOT_READ.add(hourly)
+            if hourly not in data and hourly not in LICZNIK_SENSOR_CREATED_BUT_NOT_READ:
+                LICZNIK_SENSOR_CREATED_BUT_NOT_READ.add(hourly)
                 _LOGGER.debug(
                     "Hourly sensor %s added so we can attempt to restore state", hourly
                 )
@@ -57,13 +58,14 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
                     "state": data.get(hourly, {}).get("state"),
                     "attributes": data.get(hourly, {}).get("attributes"),
                 }
-                sensors.append(AmsSensor(hass, sensor_states))
+                sensors.append(LicznikSensor(hass, sensor_states))
+        """
 
         if len(sensors):
             _LOGGER.debug("Trying to add %s sensors", len(sensors))
             async_add_devices(sensors)
 
-    async_dispatcher_connect(hass, SIGNAL_NEW_AMS_SENSOR, async_add_sensor)
+    async_dispatcher_connect(hass, SIGNAL_NEW_TELEGRAM_SENSOR, async_add_sensor)
 
     return True
 
@@ -78,7 +80,7 @@ async def async_remove_entry(hass, entry):
         pass
 
 
-class AmsSensor(RestoreEntity):
+class LicznikSensor(RestoreEntity):
     """Representation of a AMS sensor."""
 
     def __init__(self, hass, sensor_states):
@@ -140,10 +142,10 @@ class AmsSensor(RestoreEntity):
     async def async_added_to_hass(self):
         """Register callbacks and restoring states to hourly sensors."""
         await super().async_added_to_hass()
-        async_dispatcher_connect(self._hass, SIGNAL_UPDATE_AMS, self._update_callback)
+        async_dispatcher_connect(self._hass, SIGNAL_UPDATE_TELEGRAM, self._update_callback)
         old_state = await self.async_get_last_state()
 
-        if old_state is not None and self._name and self._name in HOURLY_SENSORS:
+        if old_state is not None and self._name:
             if dt_utils.utcnow() - old_state.last_changed < timedelta(minutes=60):
                 if old_state.state == STATE_UNKNOWN:
                     _LOGGER.debug(
@@ -177,6 +179,6 @@ class AmsSensor(RestoreEntity):
     @callback
     def _update_callback(self):
         """Update the state."""
-        if self._name in AMS_DEVICES:
+        if self._name in LICZNIK_DEVICES:
             self._update_properties()
             self.async_write_ha_state()
