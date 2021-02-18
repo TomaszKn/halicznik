@@ -205,7 +205,7 @@ class LiHub:
                     _LOGGER.exception(
                         "Error while write serial device %s: %s", self._ser, exc
                     )
-                    await self._handle_error()
+                    #await self._handle_error()
                     break
                 ret = None
                 ret = self.read_data_block_from_serial(self._ser)
