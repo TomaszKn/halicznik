@@ -45,5 +45,18 @@ def parse_data(stored, data):
             "icon": "mdi:gauge",
         },
     }
+    sensor_data["pomiar2"] = {
+        "state": "12",
+        "attributes": {
+            "timestamp": "2021-02-12",
+            "meter_timestamp": "2021-02-13",
+            "meter_manufacturer": "Tit",
+            "meter_type": "Energy",
+            "meter_serial": 12345,
+            "obis_code": "0.12.13",
+            "unit_of_measurement": "kVArh",
+            "icon": "mdi:gauge",
+        },
+    }
     stored.update(sensor_data)
     return stored, han_data
