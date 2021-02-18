@@ -25,7 +25,8 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
     @callback
     def async_add_sensor():
-        """Add AMS Sensor."""
+
+        _LOGGER.debug("Start add sensor LICZNIK")
         sensors = []
         data = hass.data[DOMAIN].sensor_data
 
@@ -72,7 +73,7 @@ async def async_setup_entry(hass, config_entry, async_add_devices):
 
 async def async_remove_entry(hass, entry):
     """Remove config entry from Homeassistant."""
-    _LOGGER.debug("async_remove_entry AMS")
+    _LOGGER.debug("async_remove_entry LICZNIK")
     try:
         await hass.config_entries.async_forward_entry_unload(entry, "sensor")
         _LOGGER.info("Successfully removed sensor from the Norwegian AMS integration")
@@ -96,6 +97,7 @@ class LicznikSensor(RestoreEntity):
 
     def _update_properties(self):
         """Update all portions of sensor."""
+        _LOGGER.debug("Update all portions of sensor.")
         try:
             self._state = self.ams.sensor_data[self._name].get("state")
             self._attributes = self.ams.sensor_data[self._name].get("attributes")

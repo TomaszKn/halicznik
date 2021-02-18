@@ -56,11 +56,11 @@ def _ustawienia(hass, config):
 
 async def async_setup(hass: HomeAssistant, config: Config) -> bool:
     """AMS hub YAML setup."""
-    _ustawienia(hass, config[DOMAIN])
+    #_ustawienia(hass, config[DOMAIN])
     if config.get(DOMAIN) is None:
         _LOGGER.info("No YAML config available, using config_entries")
         return True
-    #_ustawienia(hass, config[DOMAIN])
+    _ustawienia(hass, config[DOMAIN])
     if not hass.config_entries.async_entries(DOMAIN):
         hass.async_create_task(
             hass.config_entries.flow.async_init(
@@ -113,7 +113,7 @@ class LiHub:
         #self.starthar = entry[SOH]
         self.connection = threading.Thread(target=self.connect, daemon=True)
         self.connection.start()
-        _LOGGER.debug("Finish init of AMS")
+        _LOGGER.debug("Finish init of LICZNIK")
 
     def stop_serial_read(self):
         """Close resources."""
