@@ -229,12 +229,15 @@ class LiHub:
                 # 2 bytes CR LF
                 if (len(Identification_Message) < 7):
                     _LOGGER.warning("malformed identification message: '{}', abort query".format(Identification_Message))
-                    return
+                    #return
+                    continue
 
                 if (Identification_Message[0] != SOH):
                     _LOGGER.warning("identification message '{}' does not start with '/',"
                                    "abort query".format(Identification_Message))
-                    return
+                    #return
+                    continue
+
 
                 manid = str(Identification_Message[1:4], 'utf-8')
 
