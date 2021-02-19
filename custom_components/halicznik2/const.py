@@ -12,7 +12,7 @@ CONF_BAUDRATE = "baudrate"
 CONF_METER_MANUFACTURER = "meter_manufacturer"
 CONF_SERIAL_PORT = "serial_port"
 
-DOMAIN = "d0licznik2"
+DOMAIN = "halicznik2"
 
 DEFAULT_SERIAL_PORT = "/dev/ttyUSB0"
 DEFAULT_BAUDRATE = 300
