@@ -167,6 +167,8 @@ class LiHub:
         Baudrates_Protocol_Mode_E = Baudrates_Protocol_Mode_C
 
         InitialBaudrate = 300
+        wait_before_acknowledge = 0.4  # wait for 400 ms before sending the request to change baudrate
+        wait_after_acknowledge = 0.4  # wait for 400 ms after sending acknowledge
 
         parser = None
 
