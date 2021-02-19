@@ -237,7 +237,7 @@ class LiHub:
                     #return
                     continue
 
-                if (Identification_Message[0] != '/'):
+                if (Identification_Message[0] != b'/'):
                     _LOGGER.warning("identification message '{}' does not start with '/',"
                                    "abort query, start with: {} , SOH = {}".format(Identification_Message, Identification_Message[0],str(SOH)))
                     #return
