@@ -237,7 +237,7 @@ class LiHub:
                     #return
                     continue
 
-                if (Identification_Message[0] != SOH):
+                if (Identification_Message[0] != '/'):
                     _LOGGER.warning("identification message '{}' does not start with '/',"
                                    "abort query, start with: {} , SOH = {}".format(Identification_Message, Identification_Message[0],str(SOH)))
                     #return
@@ -266,8 +266,7 @@ class LiHub:
 
                 Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
 
-                wait_before_acknowledge = 0.4  # wait for 400 ms before sending the request to change baudrate
-                wait_after_acknowledge = 0.4  # wait for 400 ms after sending acknowledge
+
 
                 if Protocol_Mode == 'C':
                     # the speed change in communication is initiated from the reading device
