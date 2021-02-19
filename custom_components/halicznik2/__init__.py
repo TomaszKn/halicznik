@@ -377,11 +377,14 @@ class LiHub:
                 ch = self._ser.read()
                 _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
                 if len(ch) == 0:
+                    _LOGGER.debug("read_data_block_from_serial Len = 0 break")
                     break
                 response += ch
                 if ch == end_byte:
+                    _LOGGER.debug("read_data_block_from_serial ch == end_byte break")
                     break
                 if (response[-1] == end_byte):
+                    _LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
                     break
                 #time.sleep(0.05)
         except Exception as e:
