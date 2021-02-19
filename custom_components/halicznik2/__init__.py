@@ -105,7 +105,7 @@ class LiHub:
         self._ser = serial.Serial(
             port=port,
             baudrate=300,
-            parity=parity,
+            parity=serial.PARITY_EVEN,
             stopbits=serial.STOPBITS_ONE,
             bytesize=serial.SEVENBITS,
             timeout=DEFAULT_TIMEOUT,
@@ -213,10 +213,12 @@ class LiHub:
                     break
                 ret = None
                 #ret = self.read_data_block_from_serial(self._ser)
+                time.sleep(wait_after_acknowledge)
                 ret = self.read_data_block_from_serial()
 
                 if ret is None:
                     _LOGGER.debug("No response received upon first request")
+                    time.sleep(10)
                     continue
 
                 Identification_Message = ret
@@ -229,6 +231,7 @@ class LiHub:
                 # 2 bytes CR LF
                 if (len(Identification_Message) < 7):
                     _LOGGER.warning("malformed identification message: '{}', abort query".format(Identification_Message))
+                    sleep
                     #return
                     continue
 
