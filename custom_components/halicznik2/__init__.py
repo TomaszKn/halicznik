@@ -197,7 +197,7 @@ class LiHub:
                 starttime = time.time()
                 runtime = starttime
                 _LOGGER.info("Start While")
-                _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time(time.time() - runtime)))
+                _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time((time.time() - runtime))))
                 runtime = time.time()
 
                 init_seq = bytes('/?!\r\n', 'ascii')
