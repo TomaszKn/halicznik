@@ -197,8 +197,9 @@ class LiHub:
                 starttime = time.time()
                 runtime = starttime
                 _LOGGER.info("Start While")
-                _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time((5))))
-                runtime = time.time()
+                #_LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time((5))))
+                #runtime = time.time()
+                _LOGGER.debug("Time to open serial port {}".format(self._ser))
 
                 init_seq = bytes('/?!\r\n', 'ascii')
 
@@ -277,7 +278,7 @@ class LiHub:
 
                 response = self.read_data_block_from_serial(self._ser)
 
-                _LOGGER.debug("Time for reading OBIS data: {}".format(self.format_time(8)))
+                _LOGGER.debug("Time for reading OBIS data: ")
                 runtime = time.time()
 
                 _LOGGER.debug("OBIS data: {}".format(response))
