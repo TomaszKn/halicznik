@@ -267,7 +267,7 @@ class LiHub:
                 #Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
 
                 try:
-                    acko = '\x060'+Baudrate_identification.encode()+'0\r\n'
+                    acko = '\x060'+Baudrate_identification+'0\r\n'
                     Acknowledge = bytearray(acko, 'ascii')
                 except Exception as e:
                     _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
