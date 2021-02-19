@@ -1,6 +1,7 @@
 {
   "domain": "halicznik2",
   "name": "D0 Interfejs v2",
+  "config_flow": true,
   "documentation": "https://github.com/TomaszKn/halicznik",
   "requirements": ["pyserial==3.4","pyserial-asyncio==0.5"],
   "codeowners": ["Tomasz"]
