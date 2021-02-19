@@ -302,14 +302,15 @@ class LiHub:
                     response = None
                     response = self.read_data_block_from_serial()
                     if response is None:
-                        _LOGGER.debug("No response received upon first request")
+                        _LOGGER.debug("No data received upon first request")
                         time.sleep(10)
-                        continue
+                        #continue
+                        break
 
                     _LOGGER.debug("Time for reading OBIS data: ")
                     runtime = time.time()
 
-                    _LOGGER.debug("OBIS data: {}".format(response))
+                    _LOGGER.debug("OBIS data: Telegram{}".format(response))
                     self.sensor_data, _ = parser.parse_data(self.sensor_data, response)
                     self._check_for_new_sensors_and_update(self.sensor_data)
 
@@ -410,7 +411,7 @@ class LiHub:
                 if (response[-1] == end_byte):
                     _LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
                     break
-                # time.sleep(0.01)
+                time.sleep(0.01)
         except Exception as e:
             _LOGGER.debug("read_data_block_from_serial Warning {0}".format(e))
             return None
