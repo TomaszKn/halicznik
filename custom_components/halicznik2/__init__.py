@@ -247,7 +247,8 @@ class LiHub:
 
                 manid = str(Identification_Message[1:4], 'utf-8')
 
-                Baudrate_identification = chr(Identification_Message[4])
+                #Baudrate_identification = chr(Identification_Message[4])
+                Baudrate_identification = chr('0')
                 if Baudrate_identification in Baudrates_Protocol_Mode_B:
                     NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
                     Protocol_Mode = 'B'
