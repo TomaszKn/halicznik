@@ -249,6 +249,7 @@ class LiHub:
 
                 #Baudrate_identification = chr(Identification_Message[4])
                 Baudrate_identification = '0'
+
                 if Baudrate_identification in Baudrates_Protocol_Mode_B:
                     NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
                     Protocol_Mode = 'B'
