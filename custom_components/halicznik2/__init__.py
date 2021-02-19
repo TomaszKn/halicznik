@@ -241,6 +241,7 @@ class LiHub:
                     _LOGGER.warning("identification message '{}' does not start with '/',"
                                    "abort query".format(Identification_Message))
                     #return
+                    time.sleep(10)
                     continue
 
 
