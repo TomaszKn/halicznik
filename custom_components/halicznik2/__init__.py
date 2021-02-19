@@ -382,7 +382,7 @@ class LiHub:
             return None
         return response
 
-    def format_time(timedelta):
+    def format_time(self,timedelta):
         """
         returns a pretty formatted string according to the size of the timedelta
         :param timediff: time delta given in seconds
