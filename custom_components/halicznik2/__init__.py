@@ -272,7 +272,8 @@ class LiHub:
                         self._ser.write(Acknowledge)
                     except Exception as e:
                         _LOGGER.warning("Warning {0}".format(e))
-                        return
+                        #return
+                        continue
                     time.sleep(wait_after_acknowledge)
                     # dlms_serial.flush()
                     # dlms_serial.reset_input_buffer()
