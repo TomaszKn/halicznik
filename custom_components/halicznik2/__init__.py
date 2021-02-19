@@ -231,7 +231,7 @@ class LiHub:
                 # 2 bytes CR LF
                 if (len(Identification_Message) < 7):
                     _LOGGER.warning("malformed identification message: '{}', abort query".format(Identification_Message))
-                    sleep
+                    time.sleep(10)
                     #return
                     continue
 
