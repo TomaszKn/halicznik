@@ -215,7 +215,7 @@ class LiHub:
                     break
                 ret = None
                 #ret = self.read_data_block_from_serial(self._ser)
-                time.sleep(wait_after_acknowledge)
+                time.sleep(0.4)
                 ret = self.read_data_block_from_serial()
 
                 if ret is None:
@@ -270,7 +270,7 @@ class LiHub:
 
                 if Protocol_Mode == 'C':
                     # the speed change in communication is initiated from the reading device
-                    time.sleep(wait_before_acknowledge)
+                    time.sleep(0.4)
                     _LOGGER.debug("Using protocol mode C, send acknowledge {} "
                                  "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
                     try:
@@ -279,7 +279,7 @@ class LiHub:
                         _LOGGER.warning("Warning {0}".format(e))
                         #return
                         continue
-                    time.sleep(wait_after_acknowledge)
+                    time.sleep(0.4)
                     # dlms_serial.flush()
                     # dlms_serial.reset_input_buffer()
                     if (NewBaudrate != InitialBaudrate):
