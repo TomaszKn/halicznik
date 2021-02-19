@@ -292,6 +292,7 @@ class LiHub:
                         self._ser.baudrate = NewBaudrate
 
                 #response = self.read_data_block_from_serial(self._ser)
+                _LOGGER.info("READ Full DATA")
                 response = self.read_data_block_from_serial()
 
                 _LOGGER.debug("Time for reading OBIS data: ")
@@ -331,8 +332,8 @@ class LiHub:
         if data is None:
             data = self.data
 
-        return False
-    """
+        #return False
+
         attrs_to_check = ["meter_serial", "meter_manufacturer", "meter_type"]
         miss_attrs = [i for i in attrs_to_check if i not in self._attrs]
         if miss_attrs:
@@ -350,7 +351,7 @@ class LiHub:
                 return False
         else:
             return False
-    """
+
 
     def _check_for_new_sensors_and_update(self, sensor_data):
         """Compare sensor list and update."""
