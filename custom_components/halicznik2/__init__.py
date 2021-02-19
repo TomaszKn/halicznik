@@ -418,6 +418,7 @@ class LiHub:
                 # _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
                 if len(ch) == 0:
                     _LOGGER.debug("read_data_block_from_serial Len = 0 break")
+                    return None
                     break
                 response += ch
                 if ch == end_byte:
