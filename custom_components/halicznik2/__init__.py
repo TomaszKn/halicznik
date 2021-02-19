@@ -194,6 +194,8 @@ class LiHub:
                 else:
                     _LOGGER.debug("failed package: %s", data)
                 """
+                starttime = time.time()
+                runtime = starttime
                 _LOGGER.info("Start While")
                 _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time(time.time() - runtime)))
                 runtime = time.time()
