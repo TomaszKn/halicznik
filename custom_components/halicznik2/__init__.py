@@ -369,7 +369,7 @@ class LiHub:
         try:
             while True:
                 ch = the_serial.read()
-                # logger.debug("Read {}".format(ch))
+                _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
                 if len(ch) == 0:
                     break
                 response += ch
@@ -379,7 +379,7 @@ class LiHub:
                     break
                 #time.sleep(0.05)
         except Exception as e:
-            _LOGGER.debug("Warning {0}".format(e))
+            _LOGGER.debug("read_data_block_from_serial Warning {0}".format(e))
             return None
         return response
 
