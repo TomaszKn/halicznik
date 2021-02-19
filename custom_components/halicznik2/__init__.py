@@ -212,7 +212,8 @@ class LiHub:
                     #await self._handle_error()
                     break
                 ret = None
-                ret = self.read_data_block_from_serial(self._ser)
+                #ret = self.read_data_block_from_serial(self._ser)
+                ret = self.read_data_block_from_serial()
 
                 if ret is None:
                     _LOGGER.debug("No response received upon first request")
@@ -276,7 +277,8 @@ class LiHub:
                         # change request to set higher baudrate
                         self._ser.baudrate = NewBaudrate
 
-                response = self.read_data_block_from_serial(self._ser)
+                #response = self.read_data_block_from_serial(self._ser)
+                response = self.read_data_block_from_serial()
 
                 _LOGGER.debug("Time for reading OBIS data: ")
                 runtime = time.time()
@@ -356,7 +358,7 @@ class LiHub:
             _LOGGER.debug("sensors are the same, updating states")
             async_dispatcher_send(self._hass, SIGNAL_UPDATE_TELEGRAM)
 
-    def read_data_block_from_serial(the_serial, end_byte=0x0a):
+    def read_data_block_from_serial(self, end_byte=0x0a):
         """
         This function reads some bytes from serial interface
         it returns an array of bytes if a timeout occurs or a given end byte is encountered
@@ -368,7 +370,7 @@ class LiHub:
         response = bytes()
         try:
             while True:
-                ch = the_serial.read()
+                ch = self._ser.read()
                 _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
                 if len(ch) == 0:
                     break
