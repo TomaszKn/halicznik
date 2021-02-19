@@ -239,7 +239,7 @@ class LiHub:
 
                 if (Identification_Message[0] != SOH):
                     _LOGGER.warning("identification message '{}' does not start with '/',"
-                                   "abort query".format(Identification_Message))
+                                   "abort query, start with: {} , SOH = {}".format(Identification_Message, Identification_Message[0],str(SOH)))
                     #return
                     time.sleep(10)
                     continue
