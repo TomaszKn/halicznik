@@ -262,10 +262,15 @@ class LiHub:
                 # maybe todo
                 # we could implement here a baudrate that is fixed to somewhat lower speed if we need to
                 # read out a smartmeter with broken communication
-                Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
+                #Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
 
-                Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
+                #Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
 
+                try:
+                    Acknowledge = bytearray('\x06000\r\n', 'ascii')
+                except Exception as e:
+                    _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
+                    continue
 
 
                 if Protocol_Mode == 'C':
@@ -320,12 +325,14 @@ class LiHub:
         """Return sensor data."""
         return self.sensor_data
 
-        # def missing_attrs(self, data=None):
+    def missing_attrs(self, data=None):
         """Check if we have any missing attrs that we need and set them."""
 
-    """    if data is None:
+        if data is None:
             data = self.data
 
+        return False
+    """
         attrs_to_check = ["meter_serial", "meter_manufacturer", "meter_type"]
         miss_attrs = [i for i in attrs_to_check if i not in self._attrs]
         if miss_attrs:
