@@ -298,7 +298,6 @@ class LiHub:
                 # response = self.read_data_block_from_serial(self._ser)
                 _LOGGER.info("READ Full DATA")
 
-
                 licznik = 0
                 while True:
                     response = None
@@ -307,11 +306,18 @@ class LiHub:
                         _LOGGER.debug("No data received upon first request")
                         time.sleep(10)
                         licznik = licznik + 1
-                        continue
-                        #break
+                        if licznik > 3:
+                            break
 
-                    if licznik > 3:
+                        continue
+                        # break
+
+                    # if licznik > 3:
+                    #    break
+
+                    if len(response) and licznik > 3:
                         break
+
                     _LOGGER.debug("Time for reading OBIS data: ")
                     runtime = time.time()
 
@@ -327,7 +333,6 @@ class LiHub:
 
         _LOGGER.debug("Następna pętla")
 
-        
     def _find_parser(self, pkg):
         """Helper to detect meter manufacturer."""
         """
