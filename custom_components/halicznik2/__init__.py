@@ -322,7 +322,7 @@ class LiHub:
 
                 _LOGGER.debug("Time for reading OBIS data: ")
                 runtime = time.time()
-                if runtime - starttime > timedelta(minutes=3):
+                if runtime - starttime > (3 * 60):
                     _LOGGER.debug("Przerwanie petli odczytu OBIS")
                     break
 
