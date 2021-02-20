@@ -16,17 +16,19 @@ def parse_data(stored, data, reqs = None):
     pkt = data
     # current date and time
     now = datetime.now()
+
+    #reqs = reqs.decode()
+    reqs = str(reqs)
+
     if reqs:
-        reqs = reqs.decode('utf-8')
         try:
-            _LOGGER.debug("reqs: {}".format(reqs))
+            #manid = str(reqs[1:4], 'asci')
             manid = reqs[1:4]
-            _LOGGER.debug("manid: {}".format(manid))
         except:
             manid = " "
 
         try:
-            modelid = reqs[6:8]
+            modelid = str(reqs[6:8], 'asci')
         except:
             modelid = " "
 
