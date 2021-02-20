@@ -187,7 +187,7 @@ class LiHub:
             parser = EC3
 
         while self._running:
-            #try:
+            # try:
             """
             data = self.read_bytes()
             if parser.test_valid_data(data):
@@ -251,7 +251,7 @@ class LiHub:
             manid = str(Identification_Message[1:4], 'utf-8')
 
             Baudrate_identification = chr(Identification_Message[4])
-            #Baudrate_identification = '0'
+            # Baudrate_identification = '0'
 
             if Baudrate_identification in Baudrates_Protocol_Mode_B:
                 NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
@@ -301,21 +301,19 @@ class LiHub:
 
             licznik = 0
             starttime = time.time()
-            while True:
+            petla = True
+            while petla:
                 response = None
                 response = self.read_data_block_from_serial()
                 if response is None:
-                    _LOGGER.debug("No data received upon first request")
+                    _LOGGER.debug("No data received OBIS ")
                     time.sleep(10)
                     licznik = licznik + 1
                     if licznik > 3:
+                        petla = False
                         break
 
                     continue
-                    # break
-
-                # if licznik > 3:
-                #    break
 
                 if len(response) and licznik > 3:
                     break
@@ -324,17 +322,13 @@ class LiHub:
                 runtime = time.time()
                 if runtime - starttime > (3 * 60):
                     _LOGGER.debug("Przerwanie petli odczytu OBIS")
+                    petla = False
                     break
 
                 _LOGGER.debug("OBIS data: Telegram{}".format(response))
-                self.sensor_data, _ = parser.parse_data(self.sensor_data, response, reqs =  Identification_Message.decode())
+                self.sensor_data, _ = parser.parse_data(self.sensor_data, response,
+                                                        reqs=Identification_Message.decode())
                 self._check_for_new_sensors_and_update(self.sensor_data)
-
-            #break
-
-
-            #except serial.serialutil.SerialException:
-            #    pass
 
         _LOGGER.debug("Koniec pętli pętla")
 
@@ -401,7 +395,7 @@ class LiHub:
                 )
             else:
                 _LOGGER.debug("Got %s new devices from the serial", len(new_devices))
-                #_LOGGER.debug("DUMP %s", sensor_data)
+                # _LOGGER.debug("DUMP %s", sensor_data)
                 async_dispatcher_send(self._hass, SIGNAL_NEW_TELEGRAM_SENSOR)
         else:
             _LOGGER.debug("sensors are the same, updating states")
@@ -431,17 +425,17 @@ class LiHub:
                         return None
                         break
 
-                #if ch < 1:
+                # if ch < 1:
                 #    _LOGGER.debug("read_data_block_from_serial Len = 0 break")
                 #    #return None
                 #    break
 
                 response += ch
                 if ch == end_byte:
-                    #_LOGGER.debug("read_data_block_from_serial ch == end_byte break")
+                    # _LOGGER.debug("read_data_block_from_serial ch == end_byte break")
                     break
                 if (response[-1] == end_byte):
-                    #_LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
+                    # _LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
                     break
 
                 time.sleep(0.01)
