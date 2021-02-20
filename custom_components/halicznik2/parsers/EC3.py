@@ -47,10 +47,10 @@ def parse_data(stored, data, reqs = None):
                 "attributes": {
                     "timestamp": now,
                     "meter_timestamp": "2021-02-13",
-                    "meter_manufacturer": "Tit",
+                    "meter_manufacturer": "PAF",
                     "meter_type": "Energy",
-                    "meter_serial": 12345,
-                    "obis_code": "0.0.3",
+                    "meter_serial": 2800,
+                    "obis_code": address,
                     "obis_telegram": pkt,
                     "reqs": reqs,
                     "secvalue": secvalue,
