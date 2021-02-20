@@ -249,12 +249,12 @@ class LiHub:
                 continue
 
             try:
-                manid = str(Identification_Message[1:4], 'utf-8')
+                manid = str(Identification_Message[1:4], 'ascii')
             except:
                 manid = " "
 
             try:
-                modelid = str(Identification_Message[6:8], 'utf-8')
+                modelid = str(Identification_Message[6:8], 'ascii')
             except:
                 modelid = " "
 

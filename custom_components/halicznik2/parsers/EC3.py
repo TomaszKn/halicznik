@@ -19,12 +19,12 @@ def parse_data(stored, data, reqs = None):
 
     if reqs:
         try:
-            manid = str(reqs[1:4], 'utf-8')
+            manid = str(reqs[1:4], 'asci')
         except:
             manid = " "
 
         try:
-            modelid = str(reqs[6:8], 'utf-8')
+            modelid = str(reqs[6:8], 'asci')
         except:
             modelid = " "
 
