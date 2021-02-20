@@ -16,11 +16,8 @@ def parse_data(stored, data, reqs = None):
     pkt = data
     # current date and time
     now = datetime.now()
-
-
-
     if reqs:
-        reqs = reqs.decode()
+        reqs = reqs.decode('utf-8')
         try:
             _LOGGER.debug("reqs: {}".format(reqs))
             manid = reqs[1:4]
