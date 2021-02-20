@@ -36,7 +36,7 @@ def parse_data(stored, data):
                 unit = ""
 
             sensor_data[address] = {
-                "state": value
+                "state": value,
                 "attributes": {
                     "timestamp": "2021-02-12",
                     "meter_timestamp": "2021-02-13",
