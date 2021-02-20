@@ -186,152 +186,152 @@ class LiHub:
             parser = EC3
 
         while self._running:
+            #try:
+            """
+            data = self.read_bytes()
+            if parser.test_valid_data(data):
+                _LOGGER.debug("data read from port=%s", data)
+                self.sensor_data, _ = parser.parse_data(self.sensor_data, data)
+                self._check_for_new_sensors_and_update(self.sensor_data)
+            else:
+                _LOGGER.debug("failed package: %s", data)
+            """
+            starttime = time.time()
+            runtime = starttime
+            _LOGGER.info("Start While")
+            # _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time((5))))
+            # runtime = time.time()
+            _LOGGER.debug("Time to open serial port {}".format(self._ser))
+
+            init_seq = bytes('/?!\r\n', 'ascii')
+
             try:
-                """
-                data = self.read_bytes()
-                if parser.test_valid_data(data):
-                    _LOGGER.debug("data read from port=%s", data)
-                    self.sensor_data, _ = parser.parse_data(self.sensor_data, data)
-                    self._check_for_new_sensors_and_update(self.sensor_data)
-                else:
-                    _LOGGER.debug("failed package: %s", data)
-                """
-                starttime = time.time()
-                runtime = starttime
-                _LOGGER.info("Start While")
-                # _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time((5))))
-                # runtime = time.time()
-                _LOGGER.debug("Time to open serial port {}".format(self._ser))
+                self._ser.write(init_seq)
+            except SerialException as exc:
+                _LOGGER.exception(
+                    "Error while write serial device %s: %s", self._ser, exc
+                )
+                # await self._handle_error()
+                break
+            ret = None
+            # ret = self.read_data_block_from_serial(self._ser)
+            time.sleep(0.4)
+            ret = self.read_data_block_from_serial()
 
-                init_seq = bytes('/?!\r\n', 'ascii')
+            if ret is None:
+                _LOGGER.debug("No response received upon first request")
+                time.sleep(10)
+                continue
 
-                try:
-                    self._ser.write(init_seq)
-                except SerialException as exc:
-                    _LOGGER.exception(
-                        "Error while write serial device %s: %s", self._ser, exc
-                    )
-                    # await self._handle_error()
-                    break
-                ret = None
-                # ret = self.read_data_block_from_serial(self._ser)
+            Identification_Message = ret
+            _LOGGER.debug("Identification Message is {}".format(Identification_Message))
+
+            # need at least 7 bytes:
+            # 1 byte "/"
+            # 3 bytes short Identification
+            # 1 byte speed indication
+            # 2 bytes CR LF
+            if (len(Identification_Message) < 7):
+                _LOGGER.warning(
+                    "malformed identification message: '{}', abort query".format(Identification_Message))
+                time.sleep(10)
+                # return
+                continue
+
+            if (Identification_Message[0] != 47):
+                _LOGGER.warning("identification message '{}' does not start with '/',"
+                                "abort query, start with: {} , SOH = {}".format(Identification_Message,
+                                                                                Identification_Message[0],
+                                                                                str(SOH)))
+                # return
+                time.sleep(10)
+                continue
+
+            manid = str(Identification_Message[1:4], 'utf-8')
+
+            # Baudrate_identification = chr(Identification_Message[4])
+            Baudrate_identification = '0'
+
+            if Baudrate_identification in Baudrates_Protocol_Mode_B:
+                NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
+                Protocol_Mode = 'B'
+            elif Baudrate_identification in Baudrates_Protocol_Mode_C:
+                NewBaudrate = Baudrates_Protocol_Mode_C[Baudrate_identification]
+                Protocol_Mode = 'C'  # could also be 'E' but it doesn't make any difference here
+            else:
+                NewBaudrate = Baudrates_Protocol_Mode_A
+                Protocol_Mode = 'A'
+
+            # for protocol C or E we now send an acknowledge and include the new baudrate parameter
+            # maybe todo
+            # we could implement here a baudrate that is fixed to somewhat lower speed if we need to
+            # read out a smartmeter with broken communication
+            # Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
+
+            # Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
+
+            try:
+                acko = '\x060' + Baudrate_identification + '0\r\n'
+                Acknowledge = bytearray(acko, 'ascii')
+            except Exception as e:
+                _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
+                continue
+
+            if Protocol_Mode == 'C':
+                # the speed change in communication is initiated from the reading device
                 time.sleep(0.4)
-                ret = self.read_data_block_from_serial()
-
-                if ret is None:
-                    _LOGGER.debug("No response received upon first request")
-                    time.sleep(10)
-                    continue
-
-                Identification_Message = ret
-                _LOGGER.debug("Identification Message is {}".format(Identification_Message))
-
-                # need at least 7 bytes:
-                # 1 byte "/"
-                # 3 bytes short Identification
-                # 1 byte speed indication
-                # 2 bytes CR LF
-                if (len(Identification_Message) < 7):
-                    _LOGGER.warning(
-                        "malformed identification message: '{}', abort query".format(Identification_Message))
-                    time.sleep(10)
-                    # return
-                    continue
-
-                if (Identification_Message[0] != 47):
-                    _LOGGER.warning("identification message '{}' does not start with '/',"
-                                    "abort query, start with: {} , SOH = {}".format(Identification_Message,
-                                                                                    Identification_Message[0],
-                                                                                    str(SOH)))
-                    # return
-                    time.sleep(10)
-                    continue
-
-                manid = str(Identification_Message[1:4], 'utf-8')
-
-                # Baudrate_identification = chr(Identification_Message[4])
-                Baudrate_identification = '0'
-
-                if Baudrate_identification in Baudrates_Protocol_Mode_B:
-                    NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
-                    Protocol_Mode = 'B'
-                elif Baudrate_identification in Baudrates_Protocol_Mode_C:
-                    NewBaudrate = Baudrates_Protocol_Mode_C[Baudrate_identification]
-                    Protocol_Mode = 'C'  # could also be 'E' but it doesn't make any difference here
-                else:
-                    NewBaudrate = Baudrates_Protocol_Mode_A
-                    Protocol_Mode = 'A'
-
-                # for protocol C or E we now send an acknowledge and include the new baudrate parameter
-                # maybe todo
-                # we could implement here a baudrate that is fixed to somewhat lower speed if we need to
-                # read out a smartmeter with broken communication
-                # Action = b'0'  # Data readout, possible are also b'1' for programming mode or some manufacturer specific
-
-                # Acknowledge = b'\x060' + Baudrate_identification.encode() + Action + b'\r\n'
-
+                _LOGGER.debug("Using protocol mode C, send acknowledge {} "
+                              "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
                 try:
-                    acko = '\x060' + Baudrate_identification + '0\r\n'
-                    Acknowledge = bytearray(acko, 'ascii')
+                    self._ser.write(Acknowledge)
                 except Exception as e:
-                    _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
+                    _LOGGER.warning("Warning {0}".format(e))
+                    # return
                     continue
+                time.sleep(0.4)
+                # dlms_serial.flush()
+                # dlms_serial.reset_input_buffer()
+                if (NewBaudrate != InitialBaudrate):
+                    # change request to set higher baudrate
+                    self._ser.baudrate = NewBaudrate
+                    _LOGGER.debug("Nowa predkosc")
+            # response = self.read_data_block_from_serial(self._ser)
+            _LOGGER.info("READ Full DATA")
 
-                if Protocol_Mode == 'C':
-                    # the speed change in communication is initiated from the reading device
-                    time.sleep(0.4)
-                    _LOGGER.debug("Using protocol mode C, send acknowledge {} "
-                                  "and tell smartmeter to switch to {} Baud".format(Acknowledge, NewBaudrate))
-                    try:
-                        self._ser.write(Acknowledge)
-                    except Exception as e:
-                        _LOGGER.warning("Warning {0}".format(e))
-                        # return
-                        continue
-                    time.sleep(0.4)
-                    # dlms_serial.flush()
-                    # dlms_serial.reset_input_buffer()
-                    if (NewBaudrate != InitialBaudrate):
-                        # change request to set higher baudrate
-                        self._ser.baudrate = NewBaudrate
-                        _LOGGER.debug("Nowa predkosc")
-                # response = self.read_data_block_from_serial(self._ser)
-                _LOGGER.info("READ Full DATA")
-
-                licznik = 0
-                while True:
-                    response = None
-                    response = self.read_data_block_from_serial()
-                    if response is None:
-                        _LOGGER.debug("No data received upon first request")
-                        time.sleep(10)
-                        licznik = licznik + 1
-                        if licznik > 3:
-                            break
-
-                        continue
-                        # break
-
-                    # if licznik > 3:
-                    #    break
-
-                    if len(response) and licznik > 3:
+            licznik = 0
+            while True:
+                response = None
+                response = self.read_data_block_from_serial()
+                if response is None:
+                    _LOGGER.debug("No data received upon first request")
+                    time.sleep(10)
+                    licznik = licznik + 1
+                    if licznik > 3:
                         break
 
-                    _LOGGER.debug("Time for reading OBIS data: ")
-                    runtime = time.time()
+                    continue
+                    # break
 
-                    _LOGGER.debug("OBIS data: Telegram{}".format(response))
-                    self.sensor_data, _ = parser.parse_data(self.sensor_data, response)
-                    self._check_for_new_sensors_and_update(self.sensor_data)
+                # if licznik > 3:
+                #    break
 
-                break
+                if len(response) and licznik > 3:
+                    break
+
+                _LOGGER.debug("Time for reading OBIS data: ")
+                runtime = time.time()
+
+                _LOGGER.debug("OBIS data: Telegram{}".format(response))
+                self.sensor_data, _ = parser.parse_data(self.sensor_data, response)
+                self._check_for_new_sensors_and_update(self.sensor_data)
+
+            #break
 
 
-            except serial.serialutil.SerialException:
-                pass
+            #except serial.serialutil.SerialException:
+            #    pass
 
-        _LOGGER.debug("Następna pętla")
+        _LOGGER.debug("Koniec pętli pętla")
 
     def _find_parser(self, pkg):
         """Helper to detect meter manufacturer."""
