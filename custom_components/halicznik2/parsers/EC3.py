@@ -31,6 +31,10 @@ def parse_data(stored, data, reqs = None):
             value = x[0]
             if value.endswith(')'):
                 value = value[:-1]
+            try:
+                value = float(value)
+            except ValueError:
+                pass
             _LOGGER.debug("value = data: {}".format(value))
             try:
                 unit = '[' + x[1] + ']'
