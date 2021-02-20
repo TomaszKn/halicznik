@@ -17,11 +17,13 @@ def parse_data(stored, data, reqs = None):
     # current date and time
     now = datetime.now()
 
-    reqs = reqs.decode()
+    #reqs = reqs.decode()
 
     if reqs:
         try:
+            _LOGGER.debug("reqs: {}".format(reqs))
             manid = str(reqs[1:4], 'asci')
+            _LOGGER.debug("manid: {}".format(manid))
         except:
             manid = " "
 
