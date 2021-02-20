@@ -3,6 +3,7 @@ import logging
 import threading
 from copy import deepcopy
 import time
+from datetime import timedelta
 
 import homeassistant.helpers.config_validation as cv
 import serial
@@ -299,6 +300,7 @@ class LiHub:
             _LOGGER.info("READ Full DATA")
 
             licznik = 0
+            starttime = time.time()
             while True:
                 response = None
                 response = self.read_data_block_from_serial()
@@ -320,6 +322,9 @@ class LiHub:
 
                 _LOGGER.debug("Time for reading OBIS data: ")
                 runtime = time.time()
+                if runtime - starttime > timedelta(minutes=3):
+                    _LOGGER.debug("Przerwanie petli odczytu OBIS")
+                    break
 
                 _LOGGER.debug("OBIS data: Telegram{}".format(response))
                 self.sensor_data, _ = parser.parse_data(self.sensor_data, response, reqs =  Identification_Message.decode())
