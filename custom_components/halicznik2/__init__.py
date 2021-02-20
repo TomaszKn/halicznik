@@ -248,7 +248,15 @@ class LiHub:
                 time.sleep(10)
                 continue
 
-            manid = str(Identification_Message[1:4], 'utf-8')
+            try:
+                manid = str(Identification_Message[1:4], 'utf-8')
+            except:
+                manid = " "
+
+            try:
+                modelid = str(Identification_Message[6:8], 'utf-8')
+            except:
+                modelid = " "
 
             Baudrate_identification = chr(Identification_Message[4])
             # Baudrate_identification = '0'

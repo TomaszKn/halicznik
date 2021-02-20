@@ -17,6 +17,17 @@ def parse_data(stored, data, reqs = None):
     # current date and time
     now = datetime.now()
 
+    if reqs:
+        try:
+            manid = str(reqs[1:4], 'utf-8')
+        except:
+            manid = " "
+
+        try:
+            modelid = str(reqs[6:8], 'utf-8')
+        except:
+            modelid = " "
+
     if (pkt != ""):
         try:
             pkt = pkt.decode()
@@ -51,9 +62,9 @@ def parse_data(stored, data, reqs = None):
                 "attributes": {
                     "timestamp": now,
                     "meter_timestamp": "2021-02-13",
-                    "meter_manufacturer": "PAF",
+                    "meter_manufacturer": manid,
                     "meter_type": "Energy",
-                    "meter_serial": 2800,
+                    "meter_serial": modelid,
                     "obis_code": address,
                     "obis_telegram": pkt,
                     "reqs": reqs,
