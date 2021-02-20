@@ -329,7 +329,7 @@ class LiHub:
                     petla = False
                     break
 
-                _LOGGER.debug("OBIS data: Telegram: {}".format(response))
+                _LOGGER.debug("OBIS data: Telegram: {} diff time: {}".format(response,(runtime - starttime)))
                 self.sensor_data, _ = parser.parse_data(self.sensor_data, response,
                                                         reqs=Identification_Message.decode())
                 self._check_for_new_sensors_and_update(self.sensor_data)
