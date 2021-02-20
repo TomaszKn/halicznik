@@ -423,6 +423,7 @@ class LiHub:
                      ch = self._ser.read()
                 else:
                     if kroka < 50:
+                        _LOGGER.debug("read_data_block_from_serial buffor pusty, czekam")
                         time.sleep(0.02)
                         continue
                     else:
