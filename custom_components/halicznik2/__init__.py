@@ -416,14 +416,19 @@ class LiHub:
         """
         response = bytes()
         krok = 0
+        kroka = 0
         try:
             while True:
-                try:
-                    ch = self._ser.read()
-                except serial.SerialTimeoutException as e:
-                    _LOGGER.debug("read_data_block_from_serial timeout {0}".format(e))
-                    return None
-
+                if self._ser.in_waiting:
+                     ch = self._ser.read()
+                else:
+                    if kroka < 50:
+                        time.sleep(0.02)
+                        continue
+                    else:
+                        _LOGGER.debug("read_data_block_from_serial kroka > 50 break")
+                        return None
+                        break
                 # _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
                 if len(ch) == 0:
                     if krok < 50:
