@@ -29,7 +29,7 @@ def parse_data(stored, data, reqs = None):
 
         try:
             #modelid = str(reqs[6:8], 'asci')
-            modelid = reqs[6:9]
+            modelid = reqs[5:10]
         except:
             modelid = " "
 
