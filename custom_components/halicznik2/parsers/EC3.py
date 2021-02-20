@@ -18,20 +18,19 @@ def parse_data(stored, data, reqs = None):
     now = datetime.now()
 
     #reqs = reqs.decode()
-    reqs = str(reqs)
 
-    if reqs:
-        try:
-            #manid = str(reqs[1:4], 'asci')
-            manid = reqs[1:4]
-        except:
-            manid = " "
+    try:
+        #manid = str(reqs[1:4], 'asci')
+        reqs = str(reqs)
+        manid = reqs[1:4]
+    except:
+        manid = " "
 
-        try:
-            #modelid = str(reqs[6:8], 'asci')
-            modelid = reqs[5:10]
-        except:
-            modelid = " "
+    try:
+        #modelid = str(reqs[6:8], 'asci')
+        modelid = reqs[4:11]
+    except:
+        modelid = " "
 
     if (pkt != ""):
         try:
