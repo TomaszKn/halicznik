@@ -424,7 +424,7 @@ class LiHub:
                 else:
                     if kroka < 50:
                         _LOGGER.debug("read_data_block_from_serial buffor pusty, czekam")
-                        krok = krok + 1
+                        kroka = kroka + 1
                         time.sleep(0.02)
                         continue
                     else:
