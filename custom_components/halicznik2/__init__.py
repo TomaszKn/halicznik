@@ -413,24 +413,19 @@ class LiHub:
         """
         response = bytes()
         try:
-            response=str(self._ser.readline())
-            return response
-            """
-            for c in self._ser.read():
-                response.append(c)
-                if c == '\n':
-                    print("Line: " + ''.join(response))
-                    #line = []
-                    return response
-
-                
-                        breakwhile True:
+            while True:
                 ch = self._ser.read()
                 # _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
-                if len(ch) == 0:
+                #if len(ch) == 0:
+                #    _LOGGER.debug("read_data_block_from_serial Len = 0 break")
+                #    return None
+                #    break
+
+                if ch < 1:
                     _LOGGER.debug("read_data_block_from_serial Len = 0 break")
-                    return None
+                    #return None
                     break
+
                 response += ch
                 if ch == end_byte:
                     _LOGGER.debug("read_data_block_from_serial ch == end_byte break")
@@ -438,11 +433,12 @@ class LiHub:
                 if (response[-1] == end_byte):
                     _LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
                     break
-                """
-            time.sleep(0.01)
+
+                time.sleep(0.01)
         except Exception as e:
             _LOGGER.debug("read_data_block_from_serial Warning {0}".format(e))
             return None
+
         return response
 
     def format_time(self, timedelta):
