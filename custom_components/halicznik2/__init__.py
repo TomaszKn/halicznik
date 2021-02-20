@@ -202,7 +202,7 @@ class LiHub:
             # _LOGGER.debug("Time to open serial port {}: {}".format(self._ser, self.format_time((5))))
             # runtime = time.time()
             _LOGGER.debug("Time to open serial port {}".format(self._ser))
-
+            self._ser.baudrate = InitialBaudrate
             init_seq = bytes('/?!\r\n', 'ascii')
 
             try:
@@ -215,11 +215,11 @@ class LiHub:
                 break
             ret = None
             # ret = self.read_data_block_from_serial(self._ser)
-            time.sleep(0.4)
-            ret = self.read_data_block_from_serial()
+            time.sleep(0.1)
+            ret = self.read_data_block_from_serial(end_byte='\n')
 
             if ret is None:
-                _LOGGER.debug("No response received upon first request")
+                _LOGGER.debug("Brak odpowiedzi na first request")
                 time.sleep(10)
                 continue
 
@@ -249,8 +249,8 @@ class LiHub:
 
             manid = str(Identification_Message[1:4], 'utf-8')
 
-            # Baudrate_identification = chr(Identification_Message[4])
-            Baudrate_identification = '0'
+            Baudrate_identification = chr(Identification_Message[4])
+            #Baudrate_identification = '0'
 
             if Baudrate_identification in Baudrates_Protocol_Mode_B:
                 NewBaudrate = Baudrates_Protocol_Mode_B[Baudrate_identification]
