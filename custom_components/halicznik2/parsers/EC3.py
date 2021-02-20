@@ -15,6 +15,31 @@ def parse_data(stored, data):
     han_data = {}
     pkt = data
 
+    if (pkt != ""):
+        x = pkt.split('(')
+
+        if (len (x) > 0):
+
+            address = x[0]
+            _LOGGER.debug("adress data: {}".format(address))
+            x = x[1][:-2].split(' ')  # the standard seems to have a '*' instead of ' ' here
+            value = x[0]
+            _LOGGER.debug("value = data: {}".format(value))
+            try:
+                unit = '[' + x[1] + ']'
+            except:
+                unit = ""
+            for l in range(len(map)):
+                if (map[l][0] == address):
+                    _LOGGER.debug("map[l][0] l data: {}".format(l))
+                    """
+                    if (header == 0):
+                        line[l] = value
+                    else:
+                        line[l] = map[l][1] + unit
+                    break
+                    """
+
     """
     han_data["obis_r_e_n"] = field_type(".", fields=pkt[240:246])
     han_data["reactive_energy_n"] = byte_decode(fields=pkt[247:251]) / 100
