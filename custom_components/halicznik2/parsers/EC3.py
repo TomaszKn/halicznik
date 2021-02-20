@@ -14,6 +14,8 @@ def parse_data(stored, data):
     sensor_data = {}
     han_data = {}
     pkt = data
+    # current date and time
+    now = datetime.now()
 
     if (pkt != ""):
         try:
@@ -36,14 +38,14 @@ def parse_data(stored, data):
                 unit = ""
 
             sensor_data[address] = {
-                "state": value,
+                "state": 23,
                 "attributes": {
-                    "timestamp": "2021-02-12",
+                    "timestamp": now,
                     "meter_timestamp": "2021-02-13",
                     "meter_manufacturer": "Tit",
                     "meter_type": "Energy",
                     "meter_serial": 12345,
-                    "obis_code": address,
+                    "obis_code": "0.0.3",
                     "unit_of_measurement": unit,
                     "icon": "mdi:gauge",
                 },
