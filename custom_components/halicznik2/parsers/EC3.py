@@ -17,6 +17,8 @@ def parse_data(stored, data, reqs = None):
     # current date and time
     now = datetime.now()
 
+    reqs = reqs.decode()
+
     if reqs:
         try:
             manid = str(reqs[1:4], 'asci')
