@@ -148,7 +148,7 @@ class LicznikSensor(RestoreEntity):
         old_state = await self.async_get_last_state()
 
         if old_state is not None and self._name:
-            if dt_utils.utcnow() - old_state.last_changed < timedelta(minutes=60):
+            if dt_utils.utcnow() - old_state.last_changed < timedelta(minutes=5):
                 if old_state.state == STATE_UNKNOWN:
                     _LOGGER.debug(
                         "%s state is unknown, this typically happens if "

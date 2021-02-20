@@ -396,7 +396,7 @@ class LiHub:
                 )
             else:
                 _LOGGER.debug("Got %s new devices from the serial", len(new_devices))
-                _LOGGER.debug("DUMP %s", sensor_data)
+                #_LOGGER.debug("DUMP %s", sensor_data)
                 async_dispatcher_send(self._hass, SIGNAL_NEW_TELEGRAM_SENSOR)
         else:
             _LOGGER.debug("sensors are the same, updating states")
@@ -433,10 +433,10 @@ class LiHub:
 
                 response += ch
                 if ch == end_byte:
-                    _LOGGER.debug("read_data_block_from_serial ch == end_byte break")
+                    #_LOGGER.debug("read_data_block_from_serial ch == end_byte break")
                     break
                 if (response[-1] == end_byte):
-                    _LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
+                    #_LOGGER.debug("read_data_block_from_serial response[-1] == end_byte break")
                     break
 
                 time.sleep(0.01)
