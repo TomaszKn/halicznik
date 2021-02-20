@@ -216,7 +216,7 @@ class LiHub:
             ret = None
             # ret = self.read_data_block_from_serial(self._ser)
             time.sleep(0.1)
-            ret = self.read_data_block_from_serial(end_byte='\n')
+            ret = self.read_data_block_from_serial(end_byte=10)
 
             if ret is None:
                 _LOGGER.debug("Brak odpowiedzi na first request")
@@ -412,14 +412,19 @@ class LiHub:
         :returns the read data or None
         """
         response = bytes()
+        krok = 0
         try:
             while True:
                 ch = self._ser.read()
                 # _LOGGER.debug("read_data_block_from_serial Read {}".format(ch))
                 if len(ch) == 0:
-                    _LOGGER.debug("read_data_block_from_serial Len = 0 break")
-                    return None
-                    break
+                    if krok < 50:
+                        time.sleep(0.02)
+                        continue
+                    else:
+                        _LOGGER.debug("read_data_block_from_serial Len = 0 break")
+                        return None
+                        break
 
                 #if ch < 1:
                 #    _LOGGER.debug("read_data_block_from_serial Len = 0 break")
