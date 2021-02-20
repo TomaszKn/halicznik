@@ -322,7 +322,7 @@ class LiHub:
                 runtime = time.time()
 
                 _LOGGER.debug("OBIS data: Telegram{}".format(response))
-                self.sensor_data, _ = parser.parse_data(self.sensor_data, response)
+                self.sensor_data, _ = parser.parse_data(self.sensor_data, response, reqs =  Identification_Message.decode())
                 self._check_for_new_sensors_and_update(self.sensor_data)
 
             #break

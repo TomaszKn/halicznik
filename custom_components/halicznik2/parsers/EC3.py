@@ -9,7 +9,7 @@ from datetime import datetime
 _LOGGER = logging.getLogger(__name__)
 
 
-def parse_data(stored, data):
+def parse_data(stored, data, reqs = None):
     """Parse the incoming data to dict."""
     sensor_data = {}
     han_data = {}
@@ -37,8 +37,13 @@ def parse_data(stored, data):
             except:
                 unit = ""
 
+            try:
+                secvalue = x[1]
+            except:
+                secvalue = ""
+
             sensor_data[address] = {
-                "state": 23,
+                "state": value,
                 "attributes": {
                     "timestamp": now,
                     "meter_timestamp": "2021-02-13",
@@ -46,6 +51,9 @@ def parse_data(stored, data):
                     "meter_type": "Energy",
                     "meter_serial": 12345,
                     "obis_code": "0.0.3",
+                    "obis_telegram": pkt,
+                    "reqs": reqs,
+                    "secvalue": secvalue,
                     "unit_of_measurement": unit,
                     "icon": "mdi:gauge",
                 },
