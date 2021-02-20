@@ -314,12 +314,14 @@ class LiHub:
                         break
 
                     continue
-
+                """
                 if len(response) and licznik > 3:
                     break
+                """
 
-                _LOGGER.debug("Time for reading OBIS data: ")
                 runtime = time.time()
+                _LOGGER.debug("Time for reading OBIS data: {}".format(runtime))
+
                 if runtime - starttime > (3 * 60):
                     _LOGGER.debug("Przerwanie petli odczytu OBIS")
                     petla = False

@@ -119,7 +119,8 @@ class LicznikSensor(RestoreEntity):
     @property
     def should_poll(self) -> bool:
         """No polling needed."""
-        return False
+        #return False
+        return True
 
     @property
     def device_state_attributes(self):
