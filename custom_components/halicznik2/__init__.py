@@ -305,6 +305,7 @@ class LiHub:
             while petla:
                 response = None
                 response = self.read_data_block_from_serial()
+                """
                 if response is None:
                     _LOGGER.debug("No data received OBIS ")
                     time.sleep(10)
@@ -314,6 +315,7 @@ class LiHub:
                         break
 
                     continue
+                """
                 """
                 if len(response) and licznik > 3:
                     break
