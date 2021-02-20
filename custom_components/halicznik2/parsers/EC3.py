@@ -16,8 +16,11 @@ def parse_data(stored, data):
     pkt = data
 
     if (pkt != ""):
-        x = pkt.split('(')
-
+        try:
+            pkt = pkt.decode()
+            x = pkt.split('(')
+        except:
+            pass
         if (len (x) > 0):
 
             address = x[0]
