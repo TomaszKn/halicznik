@@ -51,10 +51,15 @@ def parse_data(stored, data, reqs = None):
             except ValueError:
                 pass
             _LOGGER.debug("value = data: {}".format(value))
+
+            if address == "15.8.0*00":
+                unit = "kWh"
+            """
             try:
                 unit = '[' + x[1] + ']'
             except:
                 unit = ""
+            """
 
             try:
                 secvalue = x[1]
