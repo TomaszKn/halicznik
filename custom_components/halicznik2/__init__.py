@@ -342,6 +342,10 @@ class LiHub:
                                                         reqs=Identification_Message.decode())
                 self._check_for_new_sensors_and_update(self.sensor_data)
 
+                time.sleep(1)
+
+            time.sleep(40)
+
         _LOGGER.debug("Koniec pętli pętla")
 
     def _find_parser(self, pkg):
