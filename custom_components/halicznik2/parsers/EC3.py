@@ -52,6 +52,7 @@ def parse_data(stored, data, reqs = None):
                 pass
             _LOGGER.debug("value = data: {}".format(value))
 
+            unit = " "
             if address == "15.8.0*00":
                 unit = "kWh"
             """
