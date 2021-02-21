@@ -44,15 +44,18 @@ def parse_data(stored, data, reqs = None):
             _LOGGER.debug("adress data: {}".format(address))
             x = x[1][:-2].split(' ')  # the standard seems to have a '*' instead of ' ' here
             value = x[0]
+
             if value.endswith(')'):
                 value = value[:-1]
+
             try:
                 value = float(value)
             except ValueError:
                 pass
+
             _LOGGER.debug("value = data: {}".format(value))
 
-            unit = " "
+            unit = "."
             if address == "15.8.0*00":
                 unit = "kWh"
             """
