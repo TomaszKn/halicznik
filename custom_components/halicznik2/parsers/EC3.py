@@ -55,13 +55,13 @@ def parse_data(stored, data, reqs = None):
             if address in kody:
                 opis = kody.get(address)[0]
                 unit = kody.get(address)[1]
-                if kody.get(address)[1] == 'TAK':
+                if kody.get(address)[2] == 'TAK':
                     try:
                         value = float(value)
                     except ValueError:
                         pass
             else:
-                unit = "."
+                unit = ""
                 opis = ""
 
 
