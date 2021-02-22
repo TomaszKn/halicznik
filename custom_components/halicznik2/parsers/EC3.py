@@ -8,6 +8,12 @@ from datetime import datetime
 
 _LOGGER = logging.getLogger(__name__)
 
+kody = {'15.8.0*00': ['Sum total', 'kWh', 'TAK'],
+        '0.0.0': ['Serial number', '', 'NIE'],
+        '0.9.1': ['Czas', '', 'NIE'],
+        '0.9.2': ['Data', '', 'NIE'],
+        }
+
 
 def parse_data(stored, data, reqs = None):
     """Parse the incoming data to dict."""
@@ -20,14 +26,12 @@ def parse_data(stored, data, reqs = None):
     #reqs = reqs.decode()
 
     try:
-        #manid = str(reqs[1:4], 'asci')
         reqs = str(reqs)
         manid = reqs[1:4]
     except:
         manid = " "
 
     try:
-        #modelid = str(reqs[6:8], 'asci')
         modelid = reqs[5:10]
     except:
         modelid = " "
@@ -48,17 +52,26 @@ def parse_data(stored, data, reqs = None):
             if value.endswith(')'):
                 value = value[:-1]
 
-            try:
-                value = float(value)
-            except ValueError:
-                pass
+            if address in kody:
+                opis = kody.get(address)[0]
+                unit = kody.get(address)[1]
+                if kody.get(address)[1] == 'TAK':
+                    try:
+                        value = float(value)
+                    except ValueError:
+                        pass
+            else:
+                unit = "."
+                opis = ""
+
+
 
             _LOGGER.debug("value = data: {}".format(value))
 
-            unit = "."
+            """
             if address == "15.8.0*00":
                 unit = "kWh"
-            """
+            
             try:
                 unit = '[' + x[1] + ']'
             except:
@@ -73,12 +86,13 @@ def parse_data(stored, data, reqs = None):
             sensor_data[address] = {
                 "state": value,
                 "attributes": {
+                    "Opis" : opis,
                     "timestamp": now,
-                    "meter_timestamp": "2021-02-13",
+                    #"meter_timestamp": "2021-02-13",
                     "meter_manufacturer": manid,
                     "meter_type": "Energy",
                     "meter_serial": modelid,
-                    "obis_code": address,
+                    #"obis_code": address,
                     "obis_telegram": pkt,
                     "reqs": reqs,
                     "secvalue": secvalue,
