@@ -209,13 +209,11 @@ class LiHub:
             try:
                 self._ser.write(init_seq)
             except SerialException as exc:
-                _LOGGER.exception(
-                    "Error while write serial device %s: %s", self._ser, exc
-                )
-                # await self._handle_error()
-                break
+                _LOGGER.exception("Error while write serial device %s: %s", self._ser, exc)
+                time.sleep(10)
+                continue
+
             ret = None
-            # ret = self.read_data_block_from_serial(self._ser)
             time.sleep(0.1)
             ret = self.read_data_block_from_serial(end_byte=10)
 
@@ -233,10 +231,8 @@ class LiHub:
             # 1 byte speed indication
             # 2 bytes CR LF
             if (len(Identification_Message) < 7):
-                _LOGGER.warning(
-                    "malformed identification message: '{}', abort query".format(Identification_Message))
+                _LOGGER.warning("malformed identification message: '{}', abort query".format(Identification_Message))
                 time.sleep(10)
-                # return
                 continue
 
             if (Identification_Message[0] != 47):
@@ -244,7 +240,6 @@ class LiHub:
                                 "abort query, start with: {} , SOH = {}".format(Identification_Message,
                                                                                 Identification_Message[0],
                                                                                 str(SOH)))
-                # return
                 time.sleep(10)
                 continue
 
@@ -284,6 +279,7 @@ class LiHub:
                 Acknowledge = bytearray(acko, 'ascii')
             except Exception as e:
                 _LOGGER.error("Konwersja Acknowledge: {0}".format(e))
+                time.sleep(10)
                 continue
 
             if Protocol_Mode == 'C':
@@ -295,17 +291,15 @@ class LiHub:
                     self._ser.write(Acknowledge)
                 except Exception as e:
                     _LOGGER.warning("Warning {0}".format(e))
-                    # return
+                    time.sleep(10)
                     continue
                 time.sleep(0.4)
-                # dlms_serial.flush()
-                # dlms_serial.reset_input_buffer()
-                if (NewBaudrate != InitialBaudrate):
+                if NewBaudrate != InitialBaudrate:
                     # change request to set higher baudrate
                     self._ser.baudrate = NewBaudrate
                     _LOGGER.debug("Nowa predkosc")
-            # response = self.read_data_block_from_serial(self._ser)
-            _LOGGER.info("READ Full DATA")
+
+            _LOGGER.info("READ Full OBIS DATA")
 
             licznik = 0
             starttime = time.time()
@@ -324,29 +318,24 @@ class LiHub:
 
                     continue
 
-                """
-                if len(response) and licznik > 3:
-                    break
-                """
-
                 runtime = time.time()
                 _LOGGER.debug("Time for reading OBIS data: {}".format(runtime))
 
                 if (runtime - starttime) > (3 * 60):
-                    _LOGGER.debug("Przerwanie petli odczytu OBIS")
+                    _LOGGER.debug("Przerwanie petli odczytu OBIS o 3 minuty")
                     petla = False
                     break
 
-                _LOGGER.debug("OBIS data: Telegram: {} diff time: {}".format(response,(runtime - starttime)))
+                _LOGGER.debug("OBIS data: Telegram: {} diff time: {}".format(response, (runtime - starttime)))
                 self.sensor_data, _ = parser.parse_data(self.sensor_data, response,
                                                         reqs=Identification_Message.decode())
                 self._check_for_new_sensors_and_update(self.sensor_data)
 
-                time.sleep(1)
+                time.sleep(0.2)
 
             time.sleep(40)
 
-        _LOGGER.debug("Koniec pętli pętla")
+        _LOGGER.debug("Koniec pętli Pełnego odczytu danych")
 
     def _find_parser(self, pkg):
         """Helper to detect meter manufacturer."""
@@ -432,10 +421,10 @@ class LiHub:
         try:
             while True:
                 if self._ser.in_waiting:
-                     ch = self._ser.read()
+                    ch = self._ser.read()
                 else:
                     if kroka < 50:
-                        #_LOGGER.debug("read_data_block_from_serial buffor pusty, czekam")
+                        # _LOGGER.debug("read_data_block_from_serial buffor pusty, czekam")
                         kroka = kroka + 1
                         time.sleep(0.02)
                         continue
@@ -453,11 +442,6 @@ class LiHub:
                         _LOGGER.debug("read_data_block_from_serial Len = 0 break")
                         return None
                         break
-
-                # if ch < 1:
-                #    _LOGGER.debug("read_data_block_from_serial Len = 0 break")
-                #    #return None
-                #    break
 
                 response += ch
                 if ch == end_byte:
