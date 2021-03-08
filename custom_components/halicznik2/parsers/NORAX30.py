@@ -8,7 +8,7 @@ from datetime import datetime
 
 _LOGGER = logging.getLogger(__name__)
 
-kody = {'15.8.0*00': ['Sum total', 'kWh', 'TAK'],
+kody = {'1-0:15.8.0': ['Sum total', 'kWh', 'TAK'],
         '0.0.0': ['Serial number', '', 'NIE'],
         '0.9.1': ['Czas', '', 'NIE'],
         '0.9.2': ['Data', '', 'NIE'],
@@ -47,13 +47,8 @@ def parse_data(stored, data, reqs = None):
 
             address = x[0]
             _LOGGER.debug("adress data: {}".format(address))
-            try:
-                x = x[1][:-2].split(' ')  # the standard seems to have a '*' instead of ' ' here
-                value = x[0]
-            except:
-                value = ""
-                pass
-
+            x = x[1][:-2].split(' ')  # the standard seems to have a '*' instead of ' ' here
+            value = x[0]
 
             if value.endswith(')'):
                 value = value[:-1]

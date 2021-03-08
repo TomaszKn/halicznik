@@ -29,6 +29,7 @@ from .const import (
     # Baudrates_Protocol_Mode_B,
 )
 from .parsers import EC3 as EC3
+from .parsers import NORAX30 as NORAX30
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -185,6 +186,8 @@ class LiHub:
 
         if self.meter_manufacturer == "ec3":
             parser = EC3
+        if self.meter_manufacturer == "norax30":
+            parser = NORAX30
 
         while self._running:
             # try:
