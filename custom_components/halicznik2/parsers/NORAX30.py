@@ -33,7 +33,7 @@ def parse_data(stored, data, reqs = None):
         manid = " "
 
     try:
-        modelid = reqs[5:10]
+        modelid = reqs[7:13]
     except:
         modelid = " "
 
@@ -47,8 +47,12 @@ def parse_data(stored, data, reqs = None):
 
             address = x[0]
             _LOGGER.debug("adress data: {}".format(address))
-            x = x[1][:-2].split(' ')  # the standard seems to have a '*' instead of ' ' here
-            value = x[0]
+            try:
+                x = x[1][:-2].split('*')  # the standard seems to have a '*' instead of ' ' here
+                value = x[0]
+            except:
+                value = ""
+                pass
 
             if value.endswith(')'):
                 value = value[:-1]
