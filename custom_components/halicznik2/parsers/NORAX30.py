@@ -9,10 +9,13 @@ from datetime import datetime
 _LOGGER = logging.getLogger(__name__)
 
 kody = {'1-0:15.8.0': ['Sum total', 'kWh', 'TAK'],
-        '0.0.0': ['Serial number', '', 'NIE'],
-        '0.9.1': ['Czas', '', 'NIE'],
-        '0.9.2': ['Data', '', 'NIE'],
-        '0.1.0': ['', '', 'NIE'],
+        '1-0:0.0.0': ['Serial number', '', 'NIE'],
+        '1-0:31.7.0': ['Prąd chwilowy, faza L1', '', 'TAK'],
+        '1-0:32.7.0': ['Napięcie chwilowe, faza L1', '', 'TAK'],
+        '1-0:51.7.0': ['Prąd chwilowy, faza L2', '', 'TAK'],
+        '1-0:52.7.0': ['Napięcie chwilowe, faza L2', '', 'TAK'],
+        '1-0:71.7.0': ['Prąd chwilowy, faza L3', '', 'TAK'],
+        '1-0:72.7.0': ['Napięcie chwilowe, faza L3', '', 'TAK'],
         }
 
 
