@@ -48,8 +48,8 @@ def parse_data(stored, data, reqs = None):
             address = x[0]
             _LOGGER.debug("adress data: {}".format(address))
             try:
-                x = x[1][:-2].split('*')  # the standard seems to have a '*' instead of ' ' here
-                value = x[0]
+                wa = x[1][:-2].split('*')  # the standard seems to have a '*' instead of ' ' here
+                value = wa[0]
             except:
                 value = ""
                 pass
@@ -72,7 +72,7 @@ def parse_data(stored, data, reqs = None):
                 opis = ""
 
             try:
-                unit = x[1]
+                unit = wa[1]
             except:
                 pass
 
@@ -85,6 +85,9 @@ def parse_data(stored, data, reqs = None):
                 secvalue = x[2]
             except:
                 secvalue = ""
+
+            if secvalue.endswith(')'):
+                secvalue = secvalue[:-1]
 
             sensor_data[address] = {
                 "state": value,
