@@ -51,7 +51,7 @@ def parse_data(stored, data, reqs = None):
             address = x[0]
             _LOGGER.debug("adress data: {}".format(address))
             try:
-                wa = x[1][:-1].split('*')  # the standard seems to have a '*' instead of ' ' here
+                wa = x[1][:-2].split('*')  # the standard seems to have a '*' instead of ' ' here
                 value = wa[0]
             except:
                 value = ""
