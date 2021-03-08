@@ -82,7 +82,7 @@ def parse_data(stored, data, reqs = None):
             _LOGGER.debug("value = data: {}".format(value))
 
             try:
-                secvalue = x[1]
+                secvalue = x[2]
             except:
                 secvalue = ""
 
