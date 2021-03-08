@@ -67,19 +67,19 @@ def parse_data(stored, data, reqs = None):
                     except ValueError:
                         pass
 
-                try:
-                    unit = x[1]
-                except:
-                    unit = kody.get(address)[1]
 
-                if unit.endswith(')'):
-                    unit = unit[:-1]
 
             else:
                 unit = ""
                 opis = ""
 
+            try:
+                unit = x[1]
+            except:
+                unit = kody.get(address)[1]
 
+            if unit.endswith(')'):
+                unit = unit[:-1]
 
             _LOGGER.debug("value = data: {}".format(value))
 
