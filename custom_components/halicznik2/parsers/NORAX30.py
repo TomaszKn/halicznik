@@ -53,8 +53,16 @@ def parse_data(stored, data, reqs = None):
             try:
                 if (len(x) > 2):
                     wa = x[1][:-1].split('*')  # the standard seems to have a '*' instead of ' ' here
+                    try:
+                        unit = wa[1]
+                    except:
+                        pass
                 else:
                     wa = x[1][:-2].split('*')  # the standard seems to have a '*' instead of ' ' here
+                    try:
+                        unit = wa[1]
+                    except:
+                        pass
                 value = wa[0]
             except:
                 value = ""
@@ -63,11 +71,19 @@ def parse_data(stored, data, reqs = None):
             if value.endswith(')'):
                 value = value[:-1]
 
-            if address in kody:
-                opis = kody.get(address)[0]
-                unit = kody.get(address)[1]
+            adresy = address.split('*')
+            if (len(adresy) > 1):
+                addressn = adresy[0]
+                kanal = adresy[1]
+            else:
+                addressn = adresy[0]
+                kanal = ''
 
-                if kody.get(address)[2] == 'TAK':
+            if addressn in kody:
+                opis = kody.get(addressn)[0]
+                unit = kody.get(addressn)[1]
+
+                if kody.get(addressn)[2] == 'TAK':
                     try:
                         value = float(value)
                     except ValueError:
@@ -76,12 +92,12 @@ def parse_data(stored, data, reqs = None):
             else:
                 unit = ""
                 opis = ""
-
+            '''
             try:
                 unit = wa[1]
             except:
                 pass
-
+            '''
             if unit.endswith(')'):
                 unit = unit[:-1]
 
@@ -106,6 +122,7 @@ def parse_data(stored, data, reqs = None):
                     "meter_serial": modelid,
                     #"obis_code": address,
                     "obis_telegram": pkt,
+                    "kanal": kanal,
                     "reqs": reqs,
                     "secvalue": secvalue,
                     "unit_of_measurement": unit,

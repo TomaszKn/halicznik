@@ -4,6 +4,6 @@
   "config_flow": true,
   "documentation": "https://github.com/TomaszKn/halicznik",
   "requirements": ["pyserial==3.4","pyserial-asyncio==0.5"],
-  "version": "1.2.3",
+  "version": "1.2.4",
   "codeowners": ["Tomasz"]
 }
