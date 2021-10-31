@@ -74,14 +74,14 @@ def parse_data(stored, data, reqs = None):
             adresy = address.split('*')
             if (len(adresy) > 1):
                 addressn = adresy[0]
-                kanal = adresy[1]
+                kanal = str (adresy[1])
             else:
-                addressn = adresy[0]
+                addressn = address
                 kanal = ''
 
             if addressn in kody:
                 opis = kody.get(addressn)[0]
-                unit = kody.get(addressn)[1]
+                #unit = kody.get(addressn)[1]
 
                 if kody.get(addressn)[2] == 'TAK':
                     try:
