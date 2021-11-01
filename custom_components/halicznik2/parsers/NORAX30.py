@@ -8,7 +8,7 @@ from datetime import datetime
 
 _LOGGER = logging.getLogger(__name__)
 
-kody = {'1-0:15.8.0': ['Sum total', 'kWh', 'TAK'],
+kody = {'1-0:15.8.0': ['Sum total', 'kWh', 'TAK','total_increasing'],
         '1-0:0.0.0': ['Serial number', '', 'NIE'],
         '1-0:31.7.0': ['Prąd chwilowy, faza L1', '', 'TAK'],
         '1-0:32.7.0': ['Napięcie chwilowe, faza L1', '', 'TAK'],
@@ -77,8 +77,8 @@ def parse_data(stored, data, reqs = None):
                 kanal = str (adresy[1])
             else:
                 addressn = address
-                kanal = 'AA'
-
+                kanal = ''
+            total_increasing_str = ''
             if addressn in kody:
                 opis = kody.get(addressn)[0]
                 #unit = kody.get(addressn)[1]
@@ -88,6 +88,11 @@ def parse_data(stored, data, reqs = None):
                         value = float(value)
                     except ValueError:
                         pass
+
+                try:
+                    total_increasing_str = kody.get(addressn)[3]
+                except:
+                    pass
 
             else:
                 unit = ""
@@ -125,6 +130,7 @@ def parse_data(stored, data, reqs = None):
                     "kanal": kanal,
                     "reqs": reqs,
                     "secvalue": secvalue,
+                    "state_class": total_increasing_str,
                     "unit_of_measurement": unit,
                     "icon": "mdi:gauge",
                 },
