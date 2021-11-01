@@ -50,10 +50,19 @@ def parse_data(stored, data, reqs = None):
 
             address = x[0]
             _LOGGER.debug("adress data: {}".format(address))
-            if address[0] == '!' or address[0] == '/':
-                _LOGGER.debug("adress is ont correct skipping: {}".format(address))
+
+            pierwszy_znak = address[0]
+
+            if pierwszy_znak == '!' or pierwszy_znak == '/':
+                _LOGGER.debug("adress is ont correct : {} skipping".format(address))
                 #stored.update(sensor_data)
                 return {}, han_data
+
+            if pierwszy_znak.isdigit() == False:
+                _LOGGER.debug("First char isn't a numeric: {} breake".format(address))
+                #stored.update(sensor_data)
+                return {}, han_data
+
             try:
                 if (len(x) > 2):
                     wa = x[1][:-1].split('*')  # the standard seems to have a '*' instead of ' ' here

@@ -109,7 +109,7 @@ class LicznikSensor(RestoreEntity):
     @property
     def unique_id(self) -> str:
         """Return the unique id of the sensor."""
-        return f"{self._name}__{self._meter_id}"
+        return f"{self._name}___{self._meter_id}"
 
     @property
     def name(self) -> str:
