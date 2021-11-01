@@ -70,14 +70,14 @@ def parse_data(stored, data, reqs = None):
 
             if value.endswith(')'):
                 value = value[:-1]
-
+            kanal = 'BB'
             adresy = address.split('*')
             if (len(adresy) > 1):
                 addressn = adresy[0]
                 kanal = str (adresy[1])
             else:
                 addressn = address
-                kanal = ''
+                kanal = 'AA'
 
             if addressn in kody:
                 opis = kody.get(addressn)[0]
