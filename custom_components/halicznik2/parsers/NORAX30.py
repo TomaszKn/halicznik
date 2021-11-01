@@ -51,8 +51,8 @@ def parse_data(stored, data, reqs = None):
             address = x[0]
             _LOGGER.debug("adress data: {}".format(address))
             if address[0] == '!' or address[0] == '/':
-                _LOGGER.debug("adres ins ont correct skipping: {}".format(address))
-                stored.update(sensor_data)
+                _LOGGER.debug("adress is ont correct skipping: {}".format(address))
+                #stored.update(sensor_data)
                 return {}, han_data
             try:
                 if (len(x) > 2):
@@ -70,7 +70,7 @@ def parse_data(stored, data, reqs = None):
                 value = wa[0]
             except:
                 value = ""
-                pass
+                return {}, han_data
 
             if value.endswith(')'):
                 value = value[:-1]
