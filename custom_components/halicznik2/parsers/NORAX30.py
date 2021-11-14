@@ -104,7 +104,15 @@ def parse_data(stored, data, reqs = None):
 
                 try:
                     total_increasing_str = kody.get(addressn)[3]
+                    """
+                        unit_of_measurement: kWh
+                        device_class: energy
+                        state_class: total_increasing
+                    """
+                    device_class_str = "energy"
                 except:
+                    device_class_str = " "
+                    total_increasing_str = " "
                     pass
 
             else:
@@ -144,6 +152,7 @@ def parse_data(stored, data, reqs = None):
                     "reqs": reqs,
                     "secvalue": secvalue,
                     "state_class": total_increasing_str,
+                    "device_class": device_class_str,
                     "unit_of_measurement": unit,
                     "icon": "mdi:gauge",
                 },
