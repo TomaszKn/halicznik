@@ -101,7 +101,7 @@ def parse_data(stored, data, reqs = None):
                         value = float(value)
                     except ValueError:
                         pass
-
+                device_class_str = " "
                 try:
                     total_increasing_str = kody.get(addressn)[3]
                     """
