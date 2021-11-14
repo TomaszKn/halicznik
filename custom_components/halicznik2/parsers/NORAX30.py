@@ -84,6 +84,7 @@ def parse_data(stored, data, reqs = None):
             if value.endswith(')'):
                 value = value[:-1]
             kanal = 'BB'
+            device_class_str = " "
             adresy = address.split('*')
             if (len(adresy) > 1):
                 addressn = adresy[0]
@@ -101,7 +102,7 @@ def parse_data(stored, data, reqs = None):
                         value = float(value)
                     except ValueError:
                         pass
-                device_class_str = " "
+
                 try:
                     total_increasing_str = kody.get(addressn)[3]
                     """
